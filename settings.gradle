@@ -1,0 +1,3 @@
+include("microservices:device-management")
+include("microservices:temperature-monitoring")
+include("microservices:temperature-processing")
