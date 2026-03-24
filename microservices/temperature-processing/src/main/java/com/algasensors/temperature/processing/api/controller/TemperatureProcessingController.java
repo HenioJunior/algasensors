@@ -25,7 +25,7 @@ public class TemperatureProcessingController {
     private final RabbitTemplate rabbitTemplate;
 
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
-    public void data(@PathVariable TSID sensorId, @RequestBody String input) {
+    public void data(@PathVariable("sensorId") TSID sensorId, @RequestBody String input) {
         if (input == null || input.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         }

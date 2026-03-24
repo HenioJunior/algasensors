@@ -5,7 +5,7 @@ spring:
  application.name: temperature-monitoring
  datasource:
   username: sa
-  url: jdbc:h2:file:~/algasensors-temperature-monitoring-db;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_ON_EXIT=FALSE
+  url: jdbc:h2:file:~/algasensors-temperature-monitoring-db;CASE_INSENSITIVE_IDENTIFIERS=TRUE;AUTO_SERVER=TRUE
   driverClassName: org.h2.Driver
   password: '123'
  h2:
@@ -22,4 +22,17 @@ spring:
   port: 5672
   username: rabbitmq
   password: rabbitmq
+  listener:
+   simple:
+    concurrency: '2'
+    max-concurrency: '2'
+    prefetch: '4'
+
+    retry:
+     enabled: 'true'
+     initial-interval: '1000'
+     multiplier: '2'
+     max-interval: '10000'
+     max-attempts: 3
+
 
