@@ -22,7 +22,7 @@ public class TemperatureLogController {
     private final TemperatureLogRepository temperatureLogRepository;
 
     @GetMapping
-    public Page<TemperatureLogData> search(@PathVariable TSID sensorId,
+    public Page<TemperatureLogData> search(@PathVariable("sensorId") TSID sensorId,
                                            @PageableDefault Pageable pageable) {
         Page<TemperatureLog> temperatureLogs = temperatureLogRepository.findAllBySensorId(
                 new SensorId(sensorId), pageable);

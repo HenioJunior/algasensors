@@ -1,6 +1,11 @@
-HELP.md
+#Mac
+.DS_Store
+
+# Gradle
 .gradle/
 build/
+fileHashes.lock
+HELP.md
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
@@ -14,7 +19,9 @@ build/
 bin/
 
 ### IntelliJ IDEA ###
-.idea/
+.idea/*
+!.idea/codeStyles
+!.idea/inspectionProfiles
 *.iws
 *.iml
 *.ipr

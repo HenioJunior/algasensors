@@ -22,7 +22,7 @@ public class SensorAlertController {
     private final SensorAlertRepository sensorAlertRepository;
 
     @GetMapping("{sensorId}/alert")
-    private ResponseEntity<SensorAlertOutput> getAlert(@PathVariable TSID sensorId) {
+    private ResponseEntity<SensorAlertOutput> getAlert(@PathVariable("sensorId") TSID sensorId) {
 
         SensorAlert sensorAlert = getSensorAlert(sensorId);
 
@@ -43,7 +43,7 @@ public class SensorAlertController {
     }
 
     @PutMapping("{sensorId}/alert")
-    public void updateAlert(@PathVariable TSID sensorId,
+    public void updateAlert(@PathVariable("sensorId") TSID sensorId,
                             @RequestBody SensorAlertInput input) {
         SensorAlert sensorAlert = getSensorAlert(sensorId);
         sensorAlert.setMaxTemperature(input.getMaxTemperature());
@@ -53,7 +53,7 @@ public class SensorAlertController {
 
     @DeleteMapping("{sensorId}/alert")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAlert(@PathVariable TSID sensorId) {
+    public void deleteAlert(@PathVariable("sensorId") TSID sensorId) {
         SensorAlert sensorAlert = getSensorAlert(sensorId);
         sensorAlertRepository.delete(sensorAlert);
     }

@@ -33,14 +33,14 @@ public class SensorController {
     }
 
     @GetMapping("{sensorId}")
-    public SensorOutput getOne(@PathVariable TSID sensorId) {
+    public SensorOutput getOne(@PathVariable("sensorId") TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return convertToSensorOutput(sensor);
     }
 
     @GetMapping("{sensorId}/detail")
-    public SensorDetailOutput getOneWithDetail(@PathVariable TSID sensorId) {
+    public SensorDetailOutput getOneWithDetail(@PathVariable("sensorId") TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -72,7 +72,7 @@ public class SensorController {
     }
 
     @PutMapping("/{sensorId}")
-    public SensorOutput update(@PathVariable TSID sensorId,
+    public SensorOutput update(@PathVariable("sensorId") TSID sensorId,
                                @RequestBody SensorInput input) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -90,7 +90,7 @@ public class SensorController {
 
     @PutMapping("/{sensorId}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable TSID sensorId) {
+    public void enable(@PathVariable("sensorId") TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         sensor.setEnabled(Boolean.TRUE);
@@ -100,7 +100,7 @@ public class SensorController {
 
     @DeleteMapping("/{sensorId}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disable(@PathVariable TSID sensorId) {
+    public void disable(@PathVariable("sensorId") TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         sensor.setEnabled(Boolean.FALSE);
@@ -110,7 +110,7 @@ public class SensorController {
 
     @DeleteMapping("/{sensorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable TSID sensorId) {
+    public void delete(@PathVariable("sensorId") TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         sensorRepository.delete(sensor);

@@ -1,5 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.service;
 
+
 import com.algasensors.temperature.monitoring.api.model.TemperatureLogData;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
@@ -9,12 +10,16 @@ import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoring
 import com.algasensors.temperature.monitoring.domain.repository.TemperatureLogRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TemperatureMonitoringService {
 
     private final SensorMonitoringRepository sensorMonitoringRepository;
@@ -22,31 +27,39 @@ public class TemperatureMonitoringService {
 
     @Transactional
     public void processTemperatureReading(TemperatureLogData temperatureLogData) {
+
         sensorMonitoringRepository.findById(new SensorId(temperatureLogData.getSensorId()))
-                .ifPresentOrElse(
-                sensor -> handleSensorMonitoring(temperatureLogData, sensor),
-                () -> logIgnoredTenperature(temperatureLogData));
+                .ifPresentOrElse(sensor -> handleSensorMonitoring(temperatureLogData, sensor),
+                        () -> logIgnoredTemperature(temperatureLogData));
+
     }
 
     private void handleSensorMonitoring(TemperatureLogData temperatureLogData, SensorMonitoring sensor) {
-    if(sensor.isEnabled()) {
-        sensor.setLastTemperature(temperatureLogData.getValue());
-        sensor.setUpdatedAt(OffsetDateTime.now());
-        sensorMonitoringRepository.save(sensor);
+        UUID logId = Optional.ofNullable(temperatureLogData.getId())
+                .orElseThrow(() -> new IllegalArgumentException("TemperatureLogData.id is required"));
 
-        TemperatureLog temperatureLog = TemperatureLog.builder()
-                .id(new TemperatureLogId(temperatureLogData.getId()))
-                .temperatureValue(temperatureLogData.getValue())
-                .registeredAt(temperatureLogData.getRegisteredAt())
-                .sensorId(new SensorId(temperatureLogData.getSensorId()))
-                .build();
+        if(sensor.isEnabled()) {
+            sensor.setLastTemperature(temperatureLogData.getValue());
+            sensor.setUpdatedAt(OffsetDateTime.now());
+            sensorMonitoringRepository.saveAndFlush(sensor);
 
-        temperatureLogRepository.save(temperatureLog);
+            TemperatureLog temperatureLog = TemperatureLog.builder()
+                    .id(new TemperatureLogId(logId))
+                    .sensorId(new SensorId(temperatureLogData.getSensorId()))
+                    .temperatureValue(temperatureLogData.getValue())
+                    .registeredAt(temperatureLogData.getRegisteredAt())
+                    .build();
+
+            temperatureLogRepository.saveAndFlush(temperatureLog);
+            log.info("Temperature Updated: SensorId {} Temp {}", temperatureLogData.getSensorId(), temperatureLogData.getValue());
+        } else {
+           logIgnoredTemperature(temperatureLogData);
+        }
+    }
+
+    private void logIgnoredTemperature(TemperatureLogData temperatureLogData) {
+        log.warn("Ignored temperature reading for sensor {}: {}", temperatureLogData.getSensorId(), temperatureLogData.getValue());
     }
 
 
-    }
-
-    private void logIgnoredTenperature(TemperatureLogData temperatureLogData) {
-    }
 }
