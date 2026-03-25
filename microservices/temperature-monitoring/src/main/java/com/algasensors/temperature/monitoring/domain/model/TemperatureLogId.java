@@ -1,12 +1,13 @@
 package com.algasensors.temperature.monitoring.domain.model;
 
+import io.hypersistence.tsid.TSID;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @Getter
 @Embeddable
@@ -14,22 +15,23 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TemperatureLogId implements Serializable {
 
-    private UUID value;
+    @Column(name = "id", nullable = false, updatable = false)
+    private String value;
 
-    public TemperatureLogId(UUID value) {
-        if (value == null) {
-            throw new IllegalArgumentException("TemperatureLogId cannot be null");
-        }
-        this.value = value;
+    public TemperatureLogId(TSID value) {
+        this.value = value.toString();
     }
 
     public TemperatureLogId(String value) {
-        this(UUID.fromString(value));
+        this.value = value;
     }
 
+    public TSID toTSID() {
+        return TSID.from(value);
+    }
 
     @Override
     public String toString() {
-        return value.toString();
+        return value;
     }
 }

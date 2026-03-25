@@ -118,7 +118,7 @@ public class SensorController {
 
     private SensorOutput convertToSensorOutput(Sensor sensor) {
         return SensorOutput.builder()
-                .id(sensor.getId().getValue())
+                .id(sensor.getId().getValue().toString())
                 .name(sensor.getName())
                 .ip(sensor.getIp())
                 .location(sensor.getLocation())
