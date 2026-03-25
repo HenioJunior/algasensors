@@ -35,7 +35,7 @@ public class TemperatureMonitoringService {
     }
 
     private void handleSensorMonitoring(TemperatureLogData temperatureLogData, SensorMonitoring sensor) {
-        UUID logId = Optional.ofNullable(temperatureLogData.getId())
+        String logId = Optional.ofNullable(temperatureLogData.getId())
                 .orElseThrow(() -> new IllegalArgumentException("TemperatureLogData.id is required"));
 
         if(sensor.isEnabled()) {

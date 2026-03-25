@@ -22,7 +22,7 @@ public class SensorAlertController {
     private final SensorAlertRepository sensorAlertRepository;
 
     @GetMapping("{sensorId}/alert")
-    private ResponseEntity<SensorAlertOutput> getAlert(@PathVariable("sensorId") TSID sensorId) {
+    ResponseEntity<SensorAlertOutput> getAlert(@PathVariable("sensorId") TSID sensorId) {
 
         SensorAlert sensorAlert = getSensorAlert(sensorId);
 
