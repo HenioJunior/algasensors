@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/sensors/{sensorId}/temperatures")
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class TemperatureLogController {
 
         return temperatureLogs.map(temperatureLog ->
                 TemperatureLogData.builder()
-                        .id(temperatureLog.getId().getValue())
+                        .id(temperatureLog.getId().getValue().toString())
                         .value(temperatureLog.getTemperatureValue())
                         .registeredAt(temperatureLog.getRegisteredAt())
                         .sensorId(temperatureLog.getSensorId().getValue())

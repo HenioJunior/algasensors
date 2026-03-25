@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TemperatureLogData {
-private UUID id;
+private String id;
 private TSID sensorId;
 private OffsetDateTime registeredAt;
 private Double value;
