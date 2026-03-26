@@ -1,12 +1,14 @@
 package com.algasensors.device.management.api.controller;
 
 import com.algasensors.device.management.api.client.SensorMonitoringClient;
-import com.algasensors.device.management.api.model.SensorDetailOutput;
-import com.algasensors.device.management.api.model.SensorMonitoringOutput;
-import com.algasensors.device.management.api.model.SensorOutput;
+import com.algasensors.device.management.api.mapper.SensorResponseMapper;
+import com.algasensors.device.management.api.response.SensorDetailOutput;
+import com.algasensors.device.management.api.response.SensorMonitoringOutput;
+import com.algasensors.device.management.api.response.SensorResponse;
+import com.algasensors.device.management.application.usecase.CreateSensorUseCase;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
-import com.algasensors.device.management.api.model.SensorInput;
+import com.algasensors.device.management.api.request.CreateSensorRequest;
 import com.algasensors.device.management.common.IdGenerator;
 import com.algasensors.device.management.domain.repository.SensorRepository;
 import io.hypersistence.tsid.TSID;
@@ -23,17 +25,20 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class SensorController {
 
+    private final CreateSensorUseCase createSensorUseCase;
+    private final SensorResponseMapper sensorResponseMapper;
+
     private final SensorRepository sensorRepository;
     private final SensorMonitoringClient sensorMonitoringClient;
 
     @GetMapping
-    public Page<SensorOutput> search(@PageableDefault Pageable pageable){
+    public Page<SensorResponse> search(@PageableDefault Pageable pageable){
         Page<Sensor> sensors = sensorRepository.findAll(pageable);
         return sensors.map(this::convertToSensorOutput);
     }
 
     @GetMapping("{sensorId}")
-    public SensorOutput getOne(@PathVariable("sensorId") TSID sensorId) {
+    public SensorResponse getOne(@PathVariable("sensorId") TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return convertToSensorOutput(sensor);
@@ -45,35 +50,33 @@ public class SensorController {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         SensorMonitoringOutput detail = sensorMonitoringClient.getDetail(sensorId);
-        SensorOutput sensorOutput = convertToSensorOutput(sensor);
+        SensorResponse sensorResponse = convertToSensorOutput(sensor);
 
         return SensorDetailOutput.builder()
-                .sensor(sensorOutput)
+                .sensor(sensorResponse)
                 .monitoring(detail)
                 .build();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SensorOutput create(@RequestBody SensorInput input) {
-        Sensor sensor = Sensor.builder()
-                .id(new SensorId(IdGenerator.generateTSID()))
-                .name(input.getName())
-                .ip(input.getIp())
-                .location(input.getLocation())
-                .protocol(input.getProtocol())
-                .model(input.getModel())
-                .enabled(Boolean.FALSE)
-                .build();
+    public SensorResponse create(@RequestBody CreateSensorRequest request) {
+        var command = new CreateSensorUseCase.CreateSensorCommand(
+                request.getName(),
+                request.getLocation(),
+                request.getIp(),
+                request.getProtocol(),
+                request.getModel()
+        );
 
-        sensor = sensorRepository.saveAndFlush(sensor);
+        var sensor = createSensorUseCase.execute(command);
 
-        return convertToSensorOutput(sensor);
+        return sensorResponseMapper.toResponse(sensor);
     }
 
     @PutMapping("/{sensorId}")
-    public SensorOutput update(@PathVariable("sensorId") TSID sensorId,
-                               @RequestBody SensorInput input) {
+    public SensorResponse update(@PathVariable("sensorId") TSID sensorId,
+                                 @RequestBody CreateSensorRequest input) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -116,8 +119,8 @@ public class SensorController {
         sensorRepository.delete(sensor);
     }
 
-    private SensorOutput convertToSensorOutput(Sensor sensor) {
-        return SensorOutput.builder()
+    private SensorResponse convertToSensorOutput(Sensor sensor) {
+        return SensorResponse.builder()
                 .id(sensor.getId().getValue().toString())
                 .name(sensor.getName())
                 .ip(sensor.getIp())

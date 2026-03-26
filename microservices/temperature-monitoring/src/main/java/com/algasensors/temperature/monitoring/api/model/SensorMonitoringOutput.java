@@ -4,13 +4,14 @@ import io.hypersistence.tsid.TSID;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Data
 @Builder
 public class SensorMonitoringOutput {
     private TSID id;
-    private Double lastTemperature;
+    private BigDecimal lastTemperature;
     private OffsetDateTime updatedAt;
     private boolean enabled;
 }

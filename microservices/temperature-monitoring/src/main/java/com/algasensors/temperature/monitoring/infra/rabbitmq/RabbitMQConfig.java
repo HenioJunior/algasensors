@@ -11,7 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String QUEUE_PROCESS_TEMPERATURE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String TEMPERATURE_ALERT_QUEUE = "temperature-alert.queue";
+    public static final String TEMPERATURE_ALERT_EXCHANGE = "temperature-alert.exchange";
+    public static final String TEMPERATURE_ALERT_ROUTING_KEY = "temperature-alert.routing-key";
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper objectMapper) {
@@ -24,8 +27,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue queue() {
-        return QueueBuilder.durable(QUEUE).build();
+    public Queue queueProcessTemperature() {
+        return QueueBuilder.durable(QUEUE_PROCESS_TEMPERATURE).build();
     }
 
     public FanoutExchange exchange() {
@@ -33,7 +36,28 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(queue()).to(exchange());
+    public Binding bindingProcessTemperature() {
+        return BindingBuilder.bind(queueProcessTemperature()).to(exchange());
+    }
+
+    @Bean
+    public Queue temperatureAlertQueue() {
+        return QueueBuilder.durable(TEMPERATURE_ALERT_QUEUE).build();
+    }
+
+    @Bean
+    public TopicExchange temperatureAlertExchange() {
+        return ExchangeBuilder
+                .topicExchange(TEMPERATURE_ALERT_EXCHANGE)
+                .durable(true)
+                .build();
+    }
+
+    @Bean
+    public Binding temperatureAlertBinding() {
+        return BindingBuilder
+                .bind(temperatureAlertQueue())
+                .to(temperatureAlertExchange())
+                .with(TEMPERATURE_ALERT_ROUTING_KEY);
     }
 }

@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -21,7 +22,7 @@ public class SensorMonitoring {
     @Id
     @AttributeOverride(name = "value", column = @Column(name="id", columnDefinition = "BIGINT"))
     private SensorId id;
-    private Double lastTemperature;
+    private BigDecimal lastTemperature;
     private OffsetDateTime updatedAt;
     private boolean enabled;
 }
