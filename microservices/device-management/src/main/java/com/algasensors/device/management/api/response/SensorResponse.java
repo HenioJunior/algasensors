@@ -1,15 +1,11 @@
-package com.algasensors.device.management.api.model;
+package com.algasensors.device.management.api.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class SensorOutput {
+public class SensorResponse {
 
     private String id;
     private String name;

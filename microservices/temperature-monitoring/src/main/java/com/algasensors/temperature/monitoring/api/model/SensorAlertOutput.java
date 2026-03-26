@@ -4,10 +4,12 @@ import io.hypersistence.tsid.TSID;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 public class SensorAlertOutput {
     private TSID id;
-    private Double maxTemperature;
-    private Double minTemperature;
+    private BigDecimal maxTemperature;
+    private BigDecimal minTemperature;
 }

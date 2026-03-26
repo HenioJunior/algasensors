@@ -1,6 +1,6 @@
 package com.algasensors.device.management.api.client;
 
-import com.algasensors.device.management.api.model.SensorMonitoringOutput;
+import com.algasensors.device.management.api.response.SensorMonitoringOutput;
 import io.hypersistence.tsid.TSID;
 
 public interface SensorMonitoringClient {

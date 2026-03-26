@@ -22,6 +22,7 @@ spring:
   port: 5672
   username: rabbitmq
   password: rabbitmq
+
   listener:
    simple:
     concurrency: '2'
@@ -34,5 +35,16 @@ spring:
      multiplier: '2'
      max-interval: '10000'
      max-attempts: 3
+app:
+ rabbitmq:
+  queues:
+   temperature-processing: temperature-processing.queue
+   temperature-alert: temperature-alert.queue
 
+  exchanges:
+   temperature: temperature.exchange
+
+  routing-keys:
+   temperature-processing: temperature.processing
+   temperature-alert: temperature.alert
 

@@ -1,7 +1,7 @@
 package com.algasensors.device.management.api.client.impl;
 
 import com.algasensors.device.management.api.client.SensorMonitoringClient;
-import com.algasensors.device.management.api.model.SensorMonitoringOutput;
+import com.algasensors.device.management.api.response.SensorMonitoringOutput;
 import io.hypersistence.tsid.TSID;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

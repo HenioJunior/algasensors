@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.model;
+package com.algasensors.device.management.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SensorDetailOutput {
-    private SensorOutput sensor;
+    private SensorResponse sensor;
     private SensorMonitoringOutput monitoring;
 }

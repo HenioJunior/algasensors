@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.model;
+package com.algasensors.device.management.api.response;
 
 import io.hypersistence.tsid.TSID;
 import lombok.AllArgsConstructor;

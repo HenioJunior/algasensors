@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @Builder
@@ -22,6 +24,6 @@ public class SensorAlert {
             column = @Column(name = "id", columnDefinition = "BIGINT")
     )
     private SensorId id;
-    private Double maxTemperature;
-    private Double minTemperature;
+    private BigDecimal maxTemperature;
+    private BigDecimal minTemperature;
 }
