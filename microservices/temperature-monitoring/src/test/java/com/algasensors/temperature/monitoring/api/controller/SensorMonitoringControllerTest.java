@@ -10,10 +10,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class SensorMonitoringControllerTest {
@@ -36,7 +38,7 @@ class SensorMonitoringControllerTest {
         SensorMonitoring sensorMonitoring = SensorMonitoring.builder()
                 .id(new SensorId(sensorId))
                 .enabled(true)
-                .lastTemperature(27.5)
+                .lastTemperature(new BigDecimal(27.5))
                 .updatedAt(updatedAt)
                 .build();
 
@@ -48,7 +50,7 @@ class SensorMonitoringControllerTest {
         assertThat(output).isNotNull();
         assertThat(output.getId()).isEqualTo(sensorId);
         assertThat(output.isEnabled()).isTrue();
-        assertThat(output.getLastTemperature()).isEqualTo(27.5);
+        assertEquals(0, output.getLastTemperature().compareTo(BigDecimal.valueOf(27.5)));
         assertThat(output.getUpdatedAt()).isEqualTo(updatedAt);
 
         verify(sensorMonitoringRepository).findById(new SensorId(sensorId));
@@ -145,7 +147,7 @@ class SensorMonitoringControllerTest {
         SensorMonitoring sensorMonitoring = SensorMonitoring.builder()
                 .id(new SensorId(sensorId))
                 .enabled(true)
-                .lastTemperature(25.0)
+                .lastTemperature(new BigDecimal(25.0))
                 .updatedAt(OffsetDateTime.now())
                 .build();
 

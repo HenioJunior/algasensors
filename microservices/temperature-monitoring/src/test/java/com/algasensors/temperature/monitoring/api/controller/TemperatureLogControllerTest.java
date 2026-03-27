@@ -14,10 +14,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class TemperatureLogControllerTest {
@@ -42,7 +44,7 @@ class TemperatureLogControllerTest {
         TemperatureLog temperatureLog = TemperatureLog.builder()
                 .id(new TemperatureLogId(logId))
                 .sensorId(new SensorId(sensorId))
-                .temperatureValue(26.7)
+                .temperatureValue(BigDecimal.valueOf(26.7))
                 .registeredAt(registeredAt)
                 .build();
 
@@ -60,7 +62,7 @@ class TemperatureLogControllerTest {
         TemperatureLogData data = result.getContent().get(0);
         assertThat(data.getId()).isEqualTo(logId.toString());
         assertThat(data.getSensorId()).isEqualTo(sensorId);
-        assertThat(data.getValue()).isEqualTo(26.7);
+        assertEquals(0, data.getValue().compareTo(BigDecimal.valueOf(26.7)));
         assertThat(data.getRegisteredAt()).isEqualTo(registeredAt);
 
         verify(temperatureLogRepository).findAllBySensorId(new SensorId(sensorId), pageable);
