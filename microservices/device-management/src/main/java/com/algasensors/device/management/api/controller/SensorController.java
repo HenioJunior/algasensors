@@ -6,6 +6,8 @@ import com.algasensors.device.management.api.response.SensorDetailOutput;
 import com.algasensors.device.management.api.response.SensorMonitoringOutput;
 import com.algasensors.device.management.api.response.SensorResponse;
 import com.algasensors.device.management.application.usecase.CreateSensorUseCase;
+import com.algasensors.device.management.application.usecase.FindSensorByIdUseCase;
+import com.algasensors.device.management.application.usecase.FindSensorsUseCase;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
 import com.algasensors.device.management.api.request.CreateSensorRequest;
@@ -26,22 +28,24 @@ import org.springframework.web.server.ResponseStatusException;
 public class SensorController {
 
     private final CreateSensorUseCase createSensorUseCase;
+    private final FindSensorByIdUseCase findSensorByIdUseCase;
     private final SensorResponseMapper sensorResponseMapper;
+    private final FindSensorsUseCase findSensorsUseCase;
 
     private final SensorRepository sensorRepository;
     private final SensorMonitoringClient sensorMonitoringClient;
 
     @GetMapping
-    public Page<SensorResponse> search(@PageableDefault Pageable pageable){
-        Page<Sensor> sensors = sensorRepository.findAll(pageable);
-        return sensors.map(this::convertToSensorOutput);
+    public Page<SensorResponse> search(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
+        return findSensorsUseCase.execute(pageable)
+                .map(sensorResponseMapper::toResponse);
     }
 
-    @GetMapping("{sensorId}")
-    public SensorResponse getOne(@PathVariable("sensorId") TSID sensorId) {
-        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return convertToSensorOutput(sensor);
+    @GetMapping("/{sensorId}")
+    public SensorResponse findById(@PathVariable String sensorId) {
+        var query = new FindSensorByIdUseCase.Query(sensorId);
+        var sensor = findSensorByIdUseCase.execute(query);
+        return sensorResponseMapper.toResponse(sensor);
     }
 
     @GetMapping("{sensorId}/detail")
