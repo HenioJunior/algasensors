@@ -17,7 +17,7 @@ public class SensorAlertGateway implements LoadSensorAlertPort {
     private final SensorAlertRepository sensorAlertRepository;
 
     @Override
-    public Optional<SensorAlert> findBySensorId(TSID sensorId) {
-        return sensorAlertRepository.findById(new SensorId(sensorId));
+    public Optional<SensorAlert> findBySensorId(SensorId sensorId) {
+        return sensorAlertRepository.findById(new SensorId(sensorId.getValue()));
     }
 }

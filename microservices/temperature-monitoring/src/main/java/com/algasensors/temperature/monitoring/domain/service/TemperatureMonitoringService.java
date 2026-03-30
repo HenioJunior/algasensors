@@ -2,7 +2,6 @@ package com.algasensors.temperature.monitoring.domain.service;
 
 
 import com.algasensors.temperature.monitoring.api.model.TemperatureLogData;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLog;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLogId;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +26,7 @@ public class TemperatureMonitoringService {
     @Transactional
     public void processTemperatureReading(TemperatureLogData temperatureLogData) {
 
-        sensorMonitoringRepository.findById(new SensorId(temperatureLogData.getSensorId()))
+        sensorMonitoringRepository.findById(temperatureLogData.getSensorId())
                 .ifPresentOrElse(sensor -> handleSensorMonitoring(temperatureLogData, sensor),
                         () -> logIgnoredTemperature(temperatureLogData));
 
@@ -45,7 +43,7 @@ public class TemperatureMonitoringService {
 
             TemperatureLog temperatureLog = TemperatureLog.builder()
                     .id(new TemperatureLogId(logId))
-                    .sensorId(new SensorId(temperatureLogData.getSensorId()))
+                    .sensorId(temperatureLogData.getSensorId())
                     .temperatureValue(temperatureLogData.getValue())
                     .registeredAt(temperatureLogData.getRegisteredAt())
                     .build();

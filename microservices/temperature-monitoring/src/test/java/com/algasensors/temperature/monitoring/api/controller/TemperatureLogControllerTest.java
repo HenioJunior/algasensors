@@ -61,8 +61,8 @@ class TemperatureLogControllerTest {
 
         TemperatureLogData data = result.getContent().get(0);
         assertThat(data.getId()).isEqualTo(logId.toString());
-        assertThat(data.getSensorId()).isEqualTo(sensorId);
-        assertEquals(0, data.getValue().compareTo(BigDecimal.valueOf(26.7)));
+        assertThat(data.getSensorId()).isEqualTo(new SensorId(sensorId));
+        assertThat(data.getValue()).isEqualByComparingTo("26.7");
         assertThat(data.getRegisteredAt()).isEqualTo(registeredAt);
 
         verify(temperatureLogRepository).findAllBySensorId(new SensorId(sensorId), pageable);

@@ -1,2 +1,7 @@
-# algasensors-meta
-Alga Sensors Meta
+# AlgaSensors
+
+## 🚀 Comandos úteis
+
+### Build
+```bash
+./gradlew clean build

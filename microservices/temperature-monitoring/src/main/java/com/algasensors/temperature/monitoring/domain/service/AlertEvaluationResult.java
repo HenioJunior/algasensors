@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.service;
 
-import io.hypersistence.tsid.TSID;
+import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class AlertEvaluationResult {
 
     private AlertStatus status;
-    private TSID sensorId;
+    private SensorId sensorId;
     private BigDecimal currentTemperature;
     private BigDecimal minTemperature;
     private BigDecimal maxTemperature;
