@@ -1,6 +1,6 @@
 package com.algasensors.device.management.api.client.impl;
 
-import com.algasensors.device.management.api.client.SensorMonitoringClientBadGatewayException;
+import com.algasensors.device.management.domain.exception.SensorMonitoringClientBadGatewayException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpRequestFactory;
