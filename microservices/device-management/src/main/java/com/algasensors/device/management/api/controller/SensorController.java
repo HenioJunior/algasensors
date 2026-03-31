@@ -1,26 +1,19 @@
 package com.algasensors.device.management.api.controller;
 
 import com.algasensors.device.management.api.client.SensorMonitoringClient;
+import com.algasensors.device.management.api.mapper.SensorDetailResponseMapper;
 import com.algasensors.device.management.api.mapper.SensorResponseMapper;
-import com.algasensors.device.management.api.response.SensorDetailOutput;
-import com.algasensors.device.management.api.response.SensorMonitoringOutput;
-import com.algasensors.device.management.api.response.SensorResponse;
-import com.algasensors.device.management.application.usecase.CreateSensorUseCase;
-import com.algasensors.device.management.application.usecase.FindSensorByIdUseCase;
-import com.algasensors.device.management.application.usecase.FindSensorsUseCase;
-import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
 import com.algasensors.device.management.api.request.CreateSensorRequest;
-import com.algasensors.device.management.common.IdGenerator;
-import com.algasensors.device.management.domain.repository.SensorRepository;
-import io.hypersistence.tsid.TSID;
+import com.algasensors.device.management.api.response.SensorDetailResponse;
+import com.algasensors.device.management.api.response.SensorResponse;
+import com.algasensors.device.management.application.usecase.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/sensors")
@@ -29,10 +22,16 @@ public class SensorController {
 
     private final CreateSensorUseCase createSensorUseCase;
     private final FindSensorByIdUseCase findSensorByIdUseCase;
-    private final SensorResponseMapper sensorResponseMapper;
+    private final FindSensorDetailUseCase findSensorDetailUseCase;
     private final FindSensorsUseCase findSensorsUseCase;
+    private final UpdateSensorUseCase updateSensorUseCase;
+    private final EnableSensorUseCase enableSensorUseCase;
+    private final DisableSensorUseCase disableSensorUseCase;
+    private final DeleteSensorUseCase deleteSensorUseCase;
+    private final SensorResponseMapper sensorResponseMapper;
+    private final SensorDetailResponseMapper sensorDetailResponseMapper;
 
-    private final SensorRepository sensorRepository;
+
     private final SensorMonitoringClient sensorMonitoringClient;
 
     @GetMapping
@@ -48,18 +47,11 @@ public class SensorController {
         return sensorResponseMapper.toResponse(sensor);
     }
 
-    @GetMapping("{sensorId}/detail")
-    public SensorDetailOutput getOneWithDetail(@PathVariable("sensorId") TSID sensorId) {
-        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        SensorMonitoringOutput detail = sensorMonitoringClient.getDetail(sensorId);
-        SensorResponse sensorResponse = convertToSensorOutput(sensor);
-
-        return SensorDetailOutput.builder()
-                .sensor(sensorResponse)
-                .monitoring(detail)
-                .build();
+    @GetMapping("/{sensorId}/detail")
+    public SensorDetailResponse findDetailById(@PathVariable String sensorId) {
+        var query = new FindSensorDetailUseCase.Query(sensorId);
+        var result = findSensorDetailUseCase.execute(query);
+        return sensorDetailResponseMapper.toResponse(result);
     }
 
     @PostMapping
@@ -79,59 +71,37 @@ public class SensorController {
     }
 
     @PutMapping("/{sensorId}")
-    public SensorResponse update(@PathVariable("sensorId") TSID sensorId,
-                                 @RequestBody CreateSensorRequest input) {
-        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public SensorResponse update(@PathVariable String sensorId,
+                                 @Valid @RequestBody CreateSensorRequest request) {
+        var command = new UpdateSensorUseCase.Command(
+                sensorId,
+                request.getName(),
+                request.getLocation(),
+                request.getIp(),
+                request.getProtocol(),
+                request.getModel()
+        );
 
-        sensor.setName(input.getName());
-        sensor.setLocation(input.getLocation());
-        sensor.setIp(input.getIp());
-        sensor.setModel(input.getModel());
-        sensor.setProtocol(input.getProtocol());
-
-        sensor = sensorRepository.save(sensor);
-
-        return convertToSensorOutput(sensor);
+        var sensor = updateSensorUseCase.execute(command);
+        return sensorResponseMapper.toResponse(sensor);
     }
 
     @PutMapping("/{sensorId}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable("sensorId") TSID sensorId) {
-        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        sensor.setEnabled(Boolean.TRUE);
-        sensorRepository.save(sensor);
-        sensorMonitoringClient.enableMonitoring(sensorId);
+    public void enable(@PathVariable String sensorId) {
+        enableSensorUseCase.execute(new EnableSensorUseCase.Command(sensorId));
     }
 
     @DeleteMapping("/{sensorId}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disable(@PathVariable("sensorId") TSID sensorId) {
-        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        sensor.setEnabled(Boolean.FALSE);
-        sensorRepository.save(sensor);
-        sensorMonitoringClient.disableMonitoring(sensorId);
+    public void disable(@PathVariable String sensorId) {
+        disableSensorUseCase.execute(new DisableSensorUseCase.Command(sensorId));
     }
 
     @DeleteMapping("/{sensorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("sensorId") TSID sensorId) {
-        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        sensorRepository.delete(sensor);
+    public void delete(@PathVariable String sensorId) {
+        deleteSensorUseCase.execute(new DeleteSensorUseCase.Command(sensorId));
     }
 
-    private SensorResponse convertToSensorOutput(Sensor sensor) {
-        return SensorResponse.builder()
-                .id(sensor.getId().getValue().toString())
-                .name(sensor.getName())
-                .ip(sensor.getIp())
-                .location(sensor.getLocation())
-                .protocol(sensor.getProtocol())
-                .model(sensor.getModel())
-                .enabled(sensor.getEnabled())
-                .build();
-    }
 }

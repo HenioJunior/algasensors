@@ -1,5 +1,6 @@
-package com.algasensors.temperature.processing.api.controller;
+package com.algasensors.temperature.processing.api;
 
+import com.algasensors.temperature.processing.api.controller.TemperatureProcessingController;
 import io.hypersistence.tsid.TSID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SensorDetailOutput {
+public class SensorDetailResponse {
     private SensorResponse sensor;
     private SensorMonitoringOutput monitoring;
 }

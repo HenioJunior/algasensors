@@ -38,8 +38,8 @@ class SensorAlertControllerTest {
 
         SensorAlert sensorAlert = SensorAlert.builder()
                 .id(new SensorId(sensorId))
-                .minTemperature(new BigDecimal(10.0))
-                .maxTemperature(new BigDecimal(35.0))
+                .minTemperature(new BigDecimal("10.0"))
+                .maxTemperature(new BigDecimal("35.0"))
                 .build();
 
         when(sensorAlertRepository.findById(new SensorId(sensorId)))

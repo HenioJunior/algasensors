@@ -14,4 +14,6 @@ public interface SensorGateway {
     Optional<Sensor> findById(SensorId sensorId);
 
     Page<Sensor> findAll(Pageable pageable);
+
+    void delete(Sensor sensor);
 }
