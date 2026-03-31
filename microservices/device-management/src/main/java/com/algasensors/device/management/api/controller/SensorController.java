@@ -1,6 +1,5 @@
 package com.algasensors.device.management.api.controller;
 
-import com.algasensors.device.management.api.client.SensorMonitoringClient;
 import com.algasensors.device.management.api.mapper.SensorDetailResponseMapper;
 import com.algasensors.device.management.api.mapper.SensorResponseMapper;
 import com.algasensors.device.management.api.request.CreateSensorRequest;
@@ -30,9 +29,6 @@ public class SensorController {
     private final DeleteSensorUseCase deleteSensorUseCase;
     private final SensorResponseMapper sensorResponseMapper;
     private final SensorDetailResponseMapper sensorDetailResponseMapper;
-
-
-    private final SensorMonitoringClient sensorMonitoringClient;
 
     @GetMapping
     public Page<SensorResponse> search(@PageableDefault(size = 20, sort = "name") Pageable pageable) {

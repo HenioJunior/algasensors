@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.client.impl;
+package com.algasensors.device.management.infra.client.impl;
 
 import com.algasensors.device.management.domain.exception.SensorMonitoringClientBadGatewayException;
 import lombok.RequiredArgsConstructor;

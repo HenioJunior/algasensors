@@ -1,8 +1,9 @@
-package com.algasensors.device.management.application.usecase.impl;
+package com.algasensors.device.management.application.service.impl;
 
 import com.algasensors.device.management.application.gateway.SensorGateway;
-import com.algasensors.device.management.application.usecase.UpdateSensorUseCase;
-import com.algasensors.device.management.application.usecase.support.SensorIdParser;
+import com.algasensors.device.management.application.usecase.DeleteSensorUseCase;
+import com.algasensors.device.management.application.usecase.impl.DeleteSensorUseCaseImpl;
+import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateSensorUseCaseImplTest {
+class DeleteSensorUseCaseImplTest {
 
     @Mock
     private SensorGateway sensorGateway;
@@ -29,69 +30,45 @@ class UpdateSensorUseCaseImplTest {
     private SensorIdParser sensorIdParser;
 
     @InjectMocks
-    private UpdateSensorUseCaseImpl updateSensorUseCase;
+    private DeleteSensorUseCaseImpl deleteSensorUseCase;
 
     @Test
-    void shouldUpdateSensorSuccessfully() {
+    void shouldDeleteSensorSuccessfully() {
         TSID tsid = TSID.fast();
         SensorId sensorId = new SensorId(tsid);
 
         Sensor sensor = Sensor.builder()
                 .id(sensorId)
-                .name("Sensor antigo")
-                .location("Local antigo")
+                .name("Sensor 01")
+                .location("Lab")
                 .ip("192.168.0.10")
-                .protocol("HTTP")
-                .model("Modelo antigo")
+                .protocol("MQTT")
+                .model("DHT22")
                 .enabled(true)
                 .build();
 
-        UpdateSensorUseCase.Command command = new UpdateSensorUseCase.Command(
-                tsid.toString(),
-                "Sensor novo",
-                "Novo local",
-                "10.0.0.20",
-                "MQTT",
-                "DHT22"
-        );
+        DeleteSensorUseCase.Command command = new DeleteSensorUseCase.Command(tsid.toString());
 
         when(sensorIdParser.parse(command.sensorId())).thenReturn(sensorId);
         when(sensorGateway.findById(sensorId)).thenReturn(Optional.of(sensor));
-        when(sensorGateway.save(sensor)).thenReturn(sensor);
 
-        Sensor result = updateSensorUseCase.execute(command);
-
-        assertThat(result).isSameAs(sensor);
-        assertThat(result.getName()).isEqualTo("Sensor novo");
-        assertThat(result.getLocation()).isEqualTo("Novo local");
-        assertThat(result.getIp()).isEqualTo("10.0.0.20");
-        assertThat(result.getProtocol()).isEqualTo("MQTT");
-        assertThat(result.getModel()).isEqualTo("DHT22");
-        assertThat(result.getEnabled()).isTrue();
+        deleteSensorUseCase.execute(command);
 
         verify(sensorIdParser).parse(command.sensorId());
         verify(sensorGateway).findById(sensorId);
-        verify(sensorGateway).save(sensor);
+        verify(sensorGateway).delete(sensor);
         verifyNoMoreInteractions(sensorGateway);
     }
 
     @Test
     void shouldThrowWhenSensorIdIsInvalid() {
         String rawSensorId = "id-invalido";
-
-        UpdateSensorUseCase.Command command = new UpdateSensorUseCase.Command(
-                rawSensorId,
-                "Sensor novo",
-                "Novo local",
-                "10.0.0.20",
-                "MQTT",
-                "DHT22"
-        );
+        DeleteSensorUseCase.Command command = new DeleteSensorUseCase.Command(rawSensorId);
 
         when(sensorIdParser.parse(rawSensorId))
                 .thenThrow(new InvalidSensorIdException(rawSensorId));
 
-        assertThatThrownBy(() -> updateSensorUseCase.execute(command))
+        assertThatThrownBy(() -> deleteSensorUseCase.execute(command))
                 .isInstanceOf(InvalidSensorIdException.class)
                 .hasMessageContaining(rawSensorId);
 
@@ -103,25 +80,17 @@ class UpdateSensorUseCaseImplTest {
     void shouldThrowWhenSensorDoesNotExist() {
         TSID tsid = TSID.fast();
         SensorId sensorId = new SensorId(tsid);
-
-        UpdateSensorUseCase.Command command = new UpdateSensorUseCase.Command(
-                tsid.toString(),
-                "Sensor novo",
-                "Novo local",
-                "10.0.0.20",
-                "MQTT",
-                "DHT22"
-        );
+        DeleteSensorUseCase.Command command = new DeleteSensorUseCase.Command(tsid.toString());
 
         when(sensorIdParser.parse(command.sensorId())).thenReturn(sensorId);
         when(sensorGateway.findById(sensorId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> updateSensorUseCase.execute(command))
+        assertThatThrownBy(() -> deleteSensorUseCase.execute(command))
                 .isInstanceOf(SensorNotFoundException.class)
                 .hasMessageContaining(tsid.toString());
 
         verify(sensorIdParser).parse(command.sensorId());
         verify(sensorGateway).findById(sensorId);
-        verify(sensorGateway, never()).save(any());
+        verify(sensorGateway, never()).delete(any());
     }
 }

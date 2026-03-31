@@ -17,16 +17,14 @@ public class CreateSensorUseCaseImpl implements CreateSensorUseCase {
 
     @Override
     public Sensor execute(CreateSensorCommand command) {
-        Sensor sensor = Sensor.builder()
-                .id(new SensorId(IdGenerator.generateTSID()))
-                .name(command.name())
-                .location(command.location())
-                .ip(command.ip())
-                .protocol(command.protocol())
-                .model(command.model())
-                .enabled(Boolean.FALSE)
-                .build();
-
+        Sensor sensor = Sensor.create(
+                new SensorId(IdGenerator.generateTSID()),
+                command.name(),
+                command.location(),
+                command.ip(),
+                command.protocol(),
+                command.model()
+        );
         return sensorGateway.save(sensor);
     }
 }

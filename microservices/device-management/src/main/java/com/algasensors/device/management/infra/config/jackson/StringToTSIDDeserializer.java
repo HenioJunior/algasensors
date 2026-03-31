@@ -1,6 +1,5 @@
-package com.algasensors.device.management.api.config.jackson;
+package com.algasensors.device.management.infra.config.jackson;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -10,7 +9,7 @@ import java.io.IOException;
 
 public class StringToTSIDDeserializer extends JsonDeserializer<TSID> {
     @Override
-    public TSID deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+    public TSID deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         return TSID.from(jsonParser.getText());
     }
 }
