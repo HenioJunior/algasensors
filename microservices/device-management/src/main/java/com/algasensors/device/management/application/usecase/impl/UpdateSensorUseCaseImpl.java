@@ -1,0 +1,34 @@
+package com.algasensors.device.management.application.usecase.impl;
+
+import com.algasensors.device.management.application.gateway.SensorGateway;
+import com.algasensors.device.management.application.usecase.UpdateSensorUseCase;
+import com.algasensors.device.management.application.usecase.support.SensorIdParser;
+import com.algasensors.device.management.domain.exception.SensorNotFoundException;
+import com.algasensors.device.management.domain.model.Sensor;
+import com.algasensors.device.management.domain.model.SensorId;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UpdateSensorUseCaseImpl implements UpdateSensorUseCase {
+
+    private final SensorGateway sensorGateway;
+    private final SensorIdParser sensorIdParser;
+
+    @Override
+    public Sensor execute(Command command) {
+        SensorId sensorId = sensorIdParser.parse(command.sensorId());
+
+        Sensor sensor = sensorGateway.findById(sensorId)
+                .orElseThrow(() -> new SensorNotFoundException(command.sensorId()));
+
+        sensor.setName(command.name());
+        sensor.setLocation(command.location());
+        sensor.setIp(command.ip());
+        sensor.setProtocol(command.protocol());
+        sensor.setModel(command.model());
+
+        return sensorGateway.save(sensor);
+    }
+}

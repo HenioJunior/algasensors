@@ -31,4 +31,9 @@ public class SensorGatewayImpl implements SensorGateway {
     public Page<Sensor> findAll(Pageable pageable) {
         return sensorRepository.findAll(pageable);
     }
+
+    @Override
+    public void delete(Sensor sensor) {
+        sensorRepository.delete(sensor);
+    }
 }
