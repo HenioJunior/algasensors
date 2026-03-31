@@ -1,6 +1,5 @@
 package com.algasensors.device.management.application.usecase.impl;
 
-import com.algasensors.device.management.application.gateway.SensorMonitoringGateway;
 import com.algasensors.device.management.api.response.SensorMonitoringOutput;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.FindSensorDetailUseCase;
@@ -8,6 +7,7 @@ import com.algasensors.device.management.domain.exception.InvalidSensorIdExcepti
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.infra.client.SensorMonitoringClient;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class FindSensorDetailUseCaseImpl implements FindSensorDetailUseCase {
 
     private final SensorGateway sensorGateway;
-    private final SensorMonitoringGateway sensorMonitoringGateway;
+    private final SensorMonitoringClient sensorMonitoringClient;
 
     @Override
     public Result execute(Query query) {
@@ -32,7 +32,7 @@ public class FindSensorDetailUseCaseImpl implements FindSensorDetailUseCase {
         Sensor sensor = sensorGateway.findById(new SensorId(tsid))
                 .orElseThrow(() -> new SensorNotFoundException(query.sensorId()));
 
-        SensorMonitoringOutput monitoring = sensorMonitoringGateway.getDetail(tsid);
+        SensorMonitoringOutput monitoring = sensorMonitoringClient.getDetail(tsid);
 
         return new Result(sensor, monitoring);
     }
