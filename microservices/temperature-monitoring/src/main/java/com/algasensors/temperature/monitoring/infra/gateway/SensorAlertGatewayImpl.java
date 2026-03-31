@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.infra.gateway;
 
-import com.algasensors.temperature.monitoring.application.port.out.LoadSensorAlertPort;
+import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.repository.SensorAlertRepository;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class SensorAlertGateway implements LoadSensorAlertPort {
+public class SensorAlertGatewayImpl implements SensorAlertGateway {
 
     private final SensorAlertRepository sensorAlertRepository;
 
