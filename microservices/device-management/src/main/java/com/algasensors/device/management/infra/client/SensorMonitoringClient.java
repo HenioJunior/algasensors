@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.client;
+package com.algasensors.device.management.infra.client;
 
 import com.algasensors.device.management.api.response.SensorMonitoringOutput;
 import io.hypersistence.tsid.TSID;

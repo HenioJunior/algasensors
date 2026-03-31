@@ -1,9 +1,10 @@
-package com.algasensors.device.management.application.usecase.impl;
+package com.algasensors.device.management.application.service.impl;
 
-import com.algasensors.device.management.api.client.SensorMonitoringClient;
+import com.algasensors.device.management.application.gateway.SensorMonitoringGateway;
 import com.algasensors.device.management.application.gateway.SensorGateway;
-import com.algasensors.device.management.application.usecase.DisableSensorUseCase;
-import com.algasensors.device.management.application.usecase.support.SensorIdParser;
+import com.algasensors.device.management.application.usecase.EnableSensorUseCase;
+import com.algasensors.device.management.application.usecase.impl.EnableSensorUseCaseImpl;
+import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
@@ -22,22 +23,22 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DisableSensorUseCaseImplTest {
+class EnableSensorUseCaseImplTest {
 
     @Mock
     private SensorGateway sensorGateway;
 
     @Mock
-    private SensorMonitoringClient sensorMonitoringClient;
+    private SensorMonitoringGateway sensorMonitoringGateway;
 
     @Mock
     private SensorIdParser sensorIdParser;
 
     @InjectMocks
-    private DisableSensorUseCaseImpl disableSensorUseCase;
+    private EnableSensorUseCaseImpl enableSensorUseCase;
 
     @Test
-    void shouldDisableSensorAndMonitoringSuccessfully() {
+    void shouldEnableSensorAndMonitoringSuccessfully() {
         TSID tsid = TSID.fast();
         SensorId sensorId = new SensorId(tsid);
 
@@ -48,61 +49,61 @@ class DisableSensorUseCaseImplTest {
                 .ip("192.168.0.10")
                 .protocol("MQTT")
                 .model("DHT22")
-                .enabled(true)
+                .enabled(false)
                 .build();
 
-        DisableSensorUseCase.Command command = new DisableSensorUseCase.Command(tsid.toString());
+        EnableSensorUseCase.Command command = new EnableSensorUseCase.Command(tsid.toString());
 
         when(sensorIdParser.parse(command.sensorId())).thenReturn(sensorId);
         when(sensorGateway.findById(sensorId)).thenReturn(Optional.of(sensor));
         when(sensorGateway.save(sensor)).thenReturn(sensor);
 
-        disableSensorUseCase.execute(command);
+        enableSensorUseCase.execute(command);
 
-        assertThat(sensor.getEnabled()).isFalse();
+        assertThat(sensor.getEnabled()).isTrue();
 
-        InOrder inOrder = inOrder(sensorIdParser, sensorGateway, sensorMonitoringClient);
+        InOrder inOrder = inOrder(sensorIdParser, sensorGateway, sensorMonitoringGateway);
         inOrder.verify(sensorIdParser).parse(command.sensorId());
         inOrder.verify(sensorGateway).findById(sensorId);
         inOrder.verify(sensorGateway).save(sensor);
-        inOrder.verify(sensorMonitoringClient).disableMonitoring(tsid);
+        inOrder.verify(sensorMonitoringGateway).enableMonitoring(tsid);
 
-        verifyNoMoreInteractions(sensorGateway, sensorMonitoringClient);
+        verifyNoMoreInteractions(sensorGateway, sensorMonitoringGateway);
     }
 
     @Test
     void shouldThrowWhenSensorIdIsInvalid() {
         String rawSensorId = "id-invalido";
-        DisableSensorUseCase.Command command = new DisableSensorUseCase.Command(rawSensorId);
+        EnableSensorUseCase.Command command = new EnableSensorUseCase.Command(rawSensorId);
 
         when(sensorIdParser.parse(rawSensorId))
                 .thenThrow(new InvalidSensorIdException(rawSensorId));
 
-        assertThatThrownBy(() -> disableSensorUseCase.execute(command))
+        assertThatThrownBy(() -> enableSensorUseCase.execute(command))
                 .isInstanceOf(InvalidSensorIdException.class)
                 .hasMessageContaining(rawSensorId);
 
         verify(sensorIdParser).parse(rawSensorId);
-        verifyNoInteractions(sensorGateway, sensorMonitoringClient);
+        verifyNoInteractions(sensorGateway, sensorMonitoringGateway);
     }
 
     @Test
     void shouldThrowWhenSensorDoesNotExist() {
         TSID tsid = TSID.fast();
         SensorId sensorId = new SensorId(tsid);
-        DisableSensorUseCase.Command command = new DisableSensorUseCase.Command(tsid.toString());
+        EnableSensorUseCase.Command command = new EnableSensorUseCase.Command(tsid.toString());
 
         when(sensorIdParser.parse(command.sensorId())).thenReturn(sensorId);
         when(sensorGateway.findById(sensorId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> disableSensorUseCase.execute(command))
+        assertThatThrownBy(() -> enableSensorUseCase.execute(command))
                 .isInstanceOf(SensorNotFoundException.class)
                 .hasMessageContaining(tsid.toString());
 
         verify(sensorIdParser).parse(command.sensorId());
         verify(sensorGateway).findById(sensorId);
         verify(sensorGateway, never()).save(any());
-        verifyNoInteractions(sensorMonitoringClient);
+        verifyNoInteractions(sensorMonitoringGateway);
     }
 
     @Test
@@ -117,22 +118,22 @@ class DisableSensorUseCaseImplTest {
                 .ip("192.168.0.10")
                 .protocol("MQTT")
                 .model("DHT22")
-                .enabled(true)
+                .enabled(false)
                 .build();
 
-        DisableSensorUseCase.Command command = new DisableSensorUseCase.Command(tsid.toString());
+        EnableSensorUseCase.Command command = new EnableSensorUseCase.Command(tsid.toString());
 
         when(sensorIdParser.parse(command.sensorId())).thenReturn(sensorId);
         when(sensorGateway.findById(sensorId)).thenReturn(Optional.of(sensor));
         when(sensorGateway.save(sensor)).thenThrow(new RuntimeException("erro ao salvar"));
 
-        assertThatThrownBy(() -> disableSensorUseCase.execute(command))
+        assertThatThrownBy(() -> enableSensorUseCase.execute(command))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("erro ao salvar");
 
-        assertThat(sensor.getEnabled()).isFalse();
+        assertThat(sensor.getEnabled()).isTrue();
 
         verify(sensorGateway).save(sensor);
-        verifyNoInteractions(sensorMonitoringClient);
+        verifyNoInteractions(sensorMonitoringGateway);
     }
 }

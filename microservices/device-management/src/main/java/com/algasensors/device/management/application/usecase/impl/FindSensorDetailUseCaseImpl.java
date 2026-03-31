@@ -1,6 +1,6 @@
 package com.algasensors.device.management.application.usecase.impl;
 
-import com.algasensors.device.management.api.client.SensorMonitoringClient;
+import com.algasensors.device.management.application.gateway.SensorMonitoringGateway;
 import com.algasensors.device.management.api.response.SensorMonitoringOutput;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.FindSensorDetailUseCase;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class FindSensorDetailUseCaseImpl implements FindSensorDetailUseCase {
 
     private final SensorGateway sensorGateway;
-    private final SensorMonitoringClient sensorMonitoringClient;
+    private final SensorMonitoringGateway sensorMonitoringGateway;
 
     @Override
     public Result execute(Query query) {
@@ -32,7 +32,7 @@ public class FindSensorDetailUseCaseImpl implements FindSensorDetailUseCase {
         Sensor sensor = sensorGateway.findById(new SensorId(tsid))
                 .orElseThrow(() -> new SensorNotFoundException(query.sensorId()));
 
-        SensorMonitoringOutput monitoring = sensorMonitoringClient.getDetail(tsid);
+        SensorMonitoringOutput monitoring = sensorMonitoringGateway.getDetail(tsid);
 
         return new Result(sensor, monitoring);
     }

@@ -1,9 +1,9 @@
-package com.algasensors.device.management.infra.persistence.repository;
+package com.algasensors.device.management.infra.persistence.gateway;
 
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
-import com.algasensors.device.management.domain.repository.SensorRepository;
+import com.algasensors.device.management.infra.persistence.repository.JpaSensorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,25 +15,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SensorGatewayImpl implements SensorGateway {
 
-    private final SensorRepository sensorRepository;
+    private final JpaSensorRepository jpaSensorRepository;
 
     @Override
     public Sensor save(Sensor sensor) {
-        return sensorRepository.saveAndFlush(sensor);
+        return jpaSensorRepository.saveAndFlush(sensor);
     }
 
     @Override
     public Optional<Sensor> findById(SensorId sensorId) {
-        return sensorRepository.findById(sensorId);
+        return jpaSensorRepository.findById(sensorId);
     }
 
     @Override
     public Page<Sensor> findAll(Pageable pageable) {
-        return sensorRepository.findAll(pageable);
+        return jpaSensorRepository.findAll(pageable);
     }
 
     @Override
     public void delete(Sensor sensor) {
-        sensorRepository.delete(sensor);
+        jpaSensorRepository.delete(sensor);
     }
 }

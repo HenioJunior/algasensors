@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.config.web;
+package com.algasensors.device.management.infra.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

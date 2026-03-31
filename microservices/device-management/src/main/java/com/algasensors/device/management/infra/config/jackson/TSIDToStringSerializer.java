@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.config.jackson;
+package com.algasensors.device.management.infra.config.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

@@ -1,4 +1,4 @@
-package com.algasensors.device.management.api.config.web;
+package com.algasensors.device.management.infra.config.web;
 
 import io.hypersistence.tsid.TSID;
 import org.springframework.core.convert.converter.Converter;

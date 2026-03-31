@@ -1,12 +1,12 @@
 package com.algasensors.device.management.application.usecase.impl;
 
-import com.algasensors.device.management.api.client.SensorMonitoringClient;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.EnableSensorUseCase;
-import com.algasensors.device.management.application.usecase.support.SensorIdParser;
+import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.infra.client.impl.SensorMonitoringClientImpl;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
 
     private final SensorGateway sensorGateway;
-    private final SensorMonitoringClient sensorMonitoringClient;
+    private final SensorMonitoringClientImpl sensorMonitoringClient;
     private final SensorIdParser sensorIdParser;
 
     @Override
@@ -26,7 +26,7 @@ public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
         Sensor sensor = sensorGateway.findById(sensorId)
                 .orElseThrow(() -> new SensorNotFoundException(command.sensorId()));
 
-        sensor.setEnabled(Boolean.TRUE);
+        sensor.enable();
         sensorGateway.save(sensor);
 
         TSID tsid = sensorId.getValue();

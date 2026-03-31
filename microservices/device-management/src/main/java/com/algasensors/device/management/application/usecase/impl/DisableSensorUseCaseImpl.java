@@ -1,12 +1,12 @@
 package com.algasensors.device.management.application.usecase.impl;
 
-import com.algasensors.device.management.api.client.SensorMonitoringClient;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.DisableSensorUseCase;
-import com.algasensors.device.management.application.usecase.support.SensorIdParser;
+import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.infra.client.SensorMonitoringClient;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class DisableSensorUseCaseImpl implements DisableSensorUseCase {
         Sensor sensor = sensorGateway.findById(sensorId)
                 .orElseThrow(() -> new SensorNotFoundException(command.sensorId()));
 
-        sensor.setEnabled(Boolean.FALSE);
+        sensor.disable();
         sensorGateway.save(sensor);
 
         TSID tsid = sensorId.getValue();

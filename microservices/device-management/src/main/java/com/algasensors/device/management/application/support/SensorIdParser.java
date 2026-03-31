@@ -1,4 +1,4 @@
-package com.algasensors.device.management.application.usecase.support;
+package com.algasensors.device.management.application.support;
 
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.model.SensorId;
