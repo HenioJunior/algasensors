@@ -1,6 +1,5 @@
 package com.algasensors.device.management.application.service.impl;
 
-import com.algasensors.device.management.application.gateway.SensorMonitoringGateway;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.EnableSensorUseCase;
 import com.algasensors.device.management.application.usecase.impl.EnableSensorUseCaseImpl;
@@ -9,6 +8,7 @@ import com.algasensors.device.management.domain.exception.InvalidSensorIdExcepti
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.infra.client.SensorMonitoringClient;
 import io.hypersistence.tsid.TSID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class EnableSensorUseCaseImplTest {
     private SensorGateway sensorGateway;
 
     @Mock
-    private SensorMonitoringGateway sensorMonitoringGateway;
+    private SensorMonitoringClient sensorMonitoringClient;
 
     @Mock
     private SensorIdParser sensorIdParser;
@@ -62,13 +62,13 @@ class EnableSensorUseCaseImplTest {
 
         assertThat(sensor.getEnabled()).isTrue();
 
-        InOrder inOrder = inOrder(sensorIdParser, sensorGateway, sensorMonitoringGateway);
+        InOrder inOrder = inOrder(sensorIdParser, sensorGateway, sensorMonitoringClient);
         inOrder.verify(sensorIdParser).parse(command.sensorId());
         inOrder.verify(sensorGateway).findById(sensorId);
         inOrder.verify(sensorGateway).save(sensor);
-        inOrder.verify(sensorMonitoringGateway).enableMonitoring(tsid);
+        inOrder.verify(sensorMonitoringClient).enableMonitoring(tsid);
 
-        verifyNoMoreInteractions(sensorGateway, sensorMonitoringGateway);
+        verifyNoMoreInteractions(sensorGateway, sensorMonitoringClient);
     }
 
     @Test
@@ -84,7 +84,7 @@ class EnableSensorUseCaseImplTest {
                 .hasMessageContaining(rawSensorId);
 
         verify(sensorIdParser).parse(rawSensorId);
-        verifyNoInteractions(sensorGateway, sensorMonitoringGateway);
+        verifyNoInteractions(sensorGateway, sensorMonitoringClient);
     }
 
     @Test
@@ -103,7 +103,7 @@ class EnableSensorUseCaseImplTest {
         verify(sensorIdParser).parse(command.sensorId());
         verify(sensorGateway).findById(sensorId);
         verify(sensorGateway, never()).save(any());
-        verifyNoInteractions(sensorMonitoringGateway);
+        verifyNoInteractions(sensorMonitoringClient);
     }
 
     @Test
@@ -134,6 +134,6 @@ class EnableSensorUseCaseImplTest {
         assertThat(sensor.getEnabled()).isTrue();
 
         verify(sensorGateway).save(sensor);
-        verifyNoInteractions(sensorMonitoringGateway);
+        verifyNoInteractions(sensorMonitoringClient);
     }
 }
