@@ -4,7 +4,6 @@ import com.algasensors.temperature.monitoring.application.port.out.LoadSensorAle
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.repository.SensorAlertRepository;
-import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

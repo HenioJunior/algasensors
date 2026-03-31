@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class SensorMonitoringControllerTest {
+class SensorMonitoringControllerLoadSensorAlertPort {
 
     private SensorMonitoringRepository sensorMonitoringRepository;
     private SensorMonitoringController controller;

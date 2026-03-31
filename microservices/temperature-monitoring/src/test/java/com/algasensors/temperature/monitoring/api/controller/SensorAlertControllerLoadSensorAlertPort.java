@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class SensorAlertControllerTest {
+class SensorAlertControllerLoadSensorAlertPort {
 
     private SensorAlertRepository sensorAlertRepository;
     private SensorAlertController controller;
@@ -38,8 +38,8 @@ class SensorAlertControllerTest {
 
         SensorAlert sensorAlert = SensorAlert.builder()
                 .id(new SensorId(sensorId))
-                .minTemperature(new BigDecimal(10.0))
-                .maxTemperature(new BigDecimal(35.0))
+                .minTemperature(new BigDecimal("10.0"))
+                .maxTemperature(new BigDecimal("35.0"))
                 .build();
 
         when(sensorAlertRepository.findById(new SensorId(sensorId)))
