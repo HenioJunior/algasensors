@@ -29,7 +29,7 @@ public class DisableSensorUseCaseImpl implements DisableSensorUseCase {
         sensor.disable();
         sensorGateway.save(sensor);
 
-        TSID tsid = sensorId.getValue();
+        TSID tsid = sensorId.getSensorValue();
         sensorMonitoringClient.disableMonitoring(tsid);
     }
 }

@@ -29,7 +29,7 @@ public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
         sensor.enable();
         sensorGateway.save(sensor);
 
-        TSID tsid = sensorId.getValue();
+        TSID tsid = sensorId.getSensorValue();
         sensorMonitoringClient.enableMonitoring(tsid);
     }
 }
