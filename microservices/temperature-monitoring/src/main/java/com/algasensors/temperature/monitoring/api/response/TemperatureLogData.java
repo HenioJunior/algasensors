@@ -1,7 +1,6 @@
-package com.algasensors.temperature.monitoring.api.model;
+package com.algasensors.temperature.monitoring.api.response;
 
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
-import io.hypersistence.tsid.TSID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

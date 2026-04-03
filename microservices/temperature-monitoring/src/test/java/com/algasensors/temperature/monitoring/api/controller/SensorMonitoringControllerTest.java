@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
-import com.algasensors.temperature.monitoring.api.model.SensorMonitoringOutput;
+import com.algasensors.temperature.monitoring.api.response.SensorMonitoringResponse;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
@@ -45,7 +45,7 @@ class SensorMonitoringControllerTest {
         when(sensorMonitoringRepository.findById(new SensorId(sensorId)))
                 .thenReturn(Optional.of(sensorMonitoring));
 
-        SensorMonitoringOutput output = controller.getDetail(sensorId);
+        SensorMonitoringResponse output = controller.getDetail(sensorId);
 
         assertThat(output).isNotNull();
         assertThat(output.getId()).isEqualTo(sensorId);
@@ -64,7 +64,7 @@ class SensorMonitoringControllerTest {
         when(sensorMonitoringRepository.findById(new SensorId(sensorId)))
                 .thenReturn(Optional.empty());
 
-        SensorMonitoringOutput output = controller.getDetail(sensorId);
+        SensorMonitoringResponse output = controller.getDetail(sensorId);
 
         assertThat(output).isNotNull();
         assertThat(output.getId()).isEqualTo(sensorId);

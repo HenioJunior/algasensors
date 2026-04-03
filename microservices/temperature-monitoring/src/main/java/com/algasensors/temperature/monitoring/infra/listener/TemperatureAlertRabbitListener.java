@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.infra.listener;
 
-import com.algasensors.temperature.monitoring.api.model.TemperatureLogData;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
 import com.algasensors.temperature.monitoring.domain.service.AlertEvaluationResult;
 import com.algasensors.temperature.monitoring.domain.service.ProcessTemperatureAlertUseCase;
 import lombok.RequiredArgsConstructor;

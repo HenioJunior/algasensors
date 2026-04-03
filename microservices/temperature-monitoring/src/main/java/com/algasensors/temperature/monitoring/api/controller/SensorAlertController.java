@@ -1,7 +1,8 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
-import com.algasensors.temperature.monitoring.api.model.SensorAlertInput;
-import com.algasensors.temperature.monitoring.api.model.SensorAlertOutput;
+import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapper;
+import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
+import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
 import com.algasensors.temperature.monitoring.common.IdGenerator;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
@@ -20,31 +21,38 @@ import org.springframework.web.server.ResponseStatusException;
 public class SensorAlertController {
 
     private final SensorAlertRepository sensorAlertRepository;
+    private final SensorAlertResponseMapper sensorAlertResponseMapper;
+
 
     @GetMapping("{sensorId}/alert")
-    ResponseEntity<SensorAlertOutput> getAlert(@PathVariable("sensorId") TSID sensorId) {
+    ResponseEntity<SensorAlertResponse> getAlert(@PathVariable("sensorId") TSID sensorId) {
 
         SensorAlert sensorAlert = getSensorAlert(sensorId);
 
-        return ResponseEntity.ok(convertToSensorAlertOutput(sensorAlert));
+        return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SensorAlertOutput createAlert(@RequestBody SensorAlertInput input) {
+    public SensorAlertResponse createAlert(@RequestBody SensorAlertRequest input) {
+        SensorAlert sensorAlert = getSensorAlert(input);
+        sensorAlertRepository.save(sensorAlert);
+        return sensorAlertResponseMapper.toResponse(sensorAlert);
+    }
+
+    private static SensorAlert getSensorAlert(SensorAlertRequest input) {
         SensorAlert sensorAlert = SensorAlert
                 .builder()
                 .id(new SensorId(IdGenerator.generateTSID()))
                 .minTemperature(input.getMinTemperature())
                 .maxTemperature(input.getMaxTemperature())
                 .build();
-        sensorAlertRepository.save(sensorAlert);
-        return convertToSensorAlertOutput(sensorAlert);
+        return sensorAlert;
     }
 
     @PutMapping("{sensorId}/alert")
     public void updateAlert(@PathVariable("sensorId") TSID sensorId,
-                            @RequestBody SensorAlertInput input) {
+                            @RequestBody SensorAlertRequest input) {
         SensorAlert sensorAlert = getSensorAlert(sensorId);
         sensorAlert.setMaxTemperature(input.getMaxTemperature());
         sensorAlert.setMinTemperature(input.getMinTemperature());
@@ -58,13 +66,6 @@ public class SensorAlertController {
         sensorAlertRepository.delete(sensorAlert);
     }
 
-    private static SensorAlertOutput convertToSensorAlertOutput(SensorAlert sensorAlert) {
-        return SensorAlertOutput.builder()
-                .id(sensorAlert.getId().getValue())
-                .maxTemperature(sensorAlert.getMaxTemperature())
-                .minTemperature(sensorAlert.getMinTemperature())
-                .build();
-    }
 
     private @NonNull SensorAlert getSensorAlert(TSID sensorId) {
         return sensorAlertRepository.findById(new SensorId(sensorId))

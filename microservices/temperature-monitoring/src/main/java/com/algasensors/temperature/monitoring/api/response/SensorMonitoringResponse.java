@@ -1,4 +1,4 @@
-package com.algasensors.temperature.monitoring.api.model;
+package com.algasensors.temperature.monitoring.api.response;
 
 import io.hypersistence.tsid.TSID;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 
 @Data
 @Builder
-public class SensorMonitoringOutput {
+public class SensorMonitoringResponse {
     private TSID id;
     private BigDecimal lastTemperature;
     private OffsetDateTime updatedAt;

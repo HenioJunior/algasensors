@@ -1,7 +1,8 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
-import com.algasensors.temperature.monitoring.api.model.SensorAlertInput;
-import com.algasensors.temperature.monitoring.api.model.SensorAlertOutput;
+import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapper;
+import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
+import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.repository.SensorAlertRepository;
@@ -15,7 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -23,12 +25,15 @@ import static org.mockito.Mockito.*;
 class SensorAlertControllerTest {
 
     private SensorAlertRepository sensorAlertRepository;
+    private SensorAlertResponseMapper sensorAlertResponseMapper;
+    private SensorAlertResponse responseMock;
     private SensorAlertController controller;
 
     @BeforeEach
     void setUp() {
         sensorAlertRepository = mock(SensorAlertRepository.class);
-        controller = new SensorAlertController(sensorAlertRepository);
+        sensorAlertResponseMapper = mock(SensorAlertResponseMapper.class);
+        controller = new SensorAlertController(sensorAlertRepository, sensorAlertResponseMapper);
     }
 
     @Test
@@ -44,8 +49,9 @@ class SensorAlertControllerTest {
 
         when(sensorAlertRepository.findById(new SensorId(sensorId)))
                 .thenReturn(Optional.of(sensorAlert));
+        when(sensorAlertResponseMapper.toResponse(any())).thenReturn(responseMock);
 
-        ResponseEntity<SensorAlertOutput> response = controller.getAlert(sensorId);
+        ResponseEntity<SensorAlertResponse> response = controller.getAlert(sensorId);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode().value()).isEqualTo(200);
@@ -76,19 +82,19 @@ class SensorAlertControllerTest {
     @Test
     @DisplayName("Deve criar alerta com sucesso")
     void shouldCreateAlertSuccessfully() {
-        SensorAlertInput input = new SensorAlertInput();
-        input.setMinTemperature(new BigDecimal(12.5));
-        input.setMaxTemperature(new BigDecimal(40.0));
+        SensorAlertRequest request = new SensorAlertRequest();
+        request.setMinTemperature(new BigDecimal(12.5));
+        request.setMaxTemperature(new BigDecimal(40.0));
 
         when(sensorAlertRepository.save(any(SensorAlert.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        SensorAlertOutput output = controller.createAlert(input);
+        SensorAlertResponse response = controller.createAlert(request);
 
-        assertThat(output).isNotNull();
-        assertThat(output.getId()).isNotNull();
-        assertEquals(0, input.getMinTemperature().compareTo(BigDecimal.valueOf(12.5)));
-        assertEquals(0, input.getMaxTemperature().compareTo(BigDecimal.valueOf(40.0)));
+        assertThat(response).isNotNull();
+        assertThat(response.getId()).isNotNull();
+        assertEquals(0, request.getMinTemperature().compareTo(BigDecimal.valueOf(12.5)));
+        assertEquals(0, request.getMaxTemperature().compareTo(BigDecimal.valueOf(40.0)));
 
         verify(sensorAlertRepository).save(any(SensorAlert.class));
     }
@@ -104,14 +110,14 @@ class SensorAlertControllerTest {
                 .maxTemperature(new BigDecimal(30.0))
                 .build();
 
-        SensorAlertInput input = new SensorAlertInput();
-        input.setMinTemperature(new BigDecimal(15.0));
-        input.setMaxTemperature(new BigDecimal(45.0));
+        SensorAlertRequest request = new SensorAlertRequest();
+        request.setMinTemperature(new BigDecimal(15.0));
+        request.setMaxTemperature(new BigDecimal(45.0));
 
         when(sensorAlertRepository.findById(new SensorId(sensorId)))
                 .thenReturn(Optional.of(existingAlert));
 
-        controller.updateAlert(sensorId, input);
+        controller.updateAlert(sensorId, request);
 
         assertEquals(0, existingAlert.getMinTemperature().compareTo(BigDecimal.valueOf(15.0)));
         assertEquals(0, existingAlert.getMaxTemperature().compareTo(BigDecimal.valueOf(45.0)));
@@ -125,14 +131,14 @@ class SensorAlertControllerTest {
     void shouldThrowNotFoundWhenUpdateAlertAndAlertDoesNotExist() {
         TSID sensorId = TSID.fast();
 
-        SensorAlertInput input = new SensorAlertInput();
-        input.setMinTemperature(new BigDecimal(15.0));
-        input.setMaxTemperature(new BigDecimal(45.0));
+        SensorAlertRequest request = new SensorAlertRequest();
+        request.setMinTemperature(new BigDecimal(15.0));
+        request.setMaxTemperature(new BigDecimal(45.0));
 
         when(sensorAlertRepository.findById(new SensorId(sensorId)))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> controller.updateAlert(sensorId, input))
+        assertThatThrownBy(() -> controller.updateAlert(sensorId, request))
                 .isInstanceOf(ResponseStatusException.class)
                 .extracting("statusCode.value")
                 .isEqualTo(404);

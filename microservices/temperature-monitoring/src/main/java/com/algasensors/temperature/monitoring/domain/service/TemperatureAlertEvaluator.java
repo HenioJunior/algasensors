@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.service;
 
-import com.algasensors.temperature.monitoring.api.model.TemperatureLogData;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import org.springframework.stereotype.Component;
 

@@ -1,11 +1,11 @@
-package com.algasensors.temperature.monitoring.api.model;
+package com.algasensors.temperature.monitoring.api.request;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-public class SensorAlertInput {
+public class SensorAlertRequest {
     private BigDecimal maxTemperature;
     private BigDecimal minTemperature;
 }

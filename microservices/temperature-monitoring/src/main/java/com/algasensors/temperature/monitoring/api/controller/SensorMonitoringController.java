@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
-import com.algasensors.temperature.monitoring.api.model.SensorMonitoringOutput;
+import com.algasensors.temperature.monitoring.api.response.SensorMonitoringResponse;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
@@ -11,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-
 @RestController
 @RequestMapping("/api/sensors/{sensorId}/monitoring")
 @RequiredArgsConstructor
@@ -22,10 +19,10 @@ public class SensorMonitoringController {
     private final SensorMonitoringRepository sensorMonitoringRepository;
 
     @GetMapping
-    public SensorMonitoringOutput getDetail(@PathVariable("sensorId") TSID sensorId){
+    public SensorMonitoringResponse getDetail(@PathVariable("sensorId") TSID sensorId){
         SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
 
-        return SensorMonitoringOutput.builder()
+        return SensorMonitoringResponse.builder()
                 .id(sensorMonitoring.getId().getValue())
                 .enabled(sensorMonitoring.isEnabled())
                 .lastTemperature(sensorMonitoring.getLastTemperature())
