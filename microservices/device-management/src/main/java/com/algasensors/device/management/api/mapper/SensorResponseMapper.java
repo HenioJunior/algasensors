@@ -9,7 +9,7 @@ public class SensorResponseMapper {
 
     public SensorResponse toResponse(Sensor sensor) {
         return SensorResponse.builder()
-                .id(sensor.getId().getValue().toString())
+                .id(sensor.getId().getSensorValue().toString())
                 .name(sensor.getName())
                 .location(sensor.getLocation())
                 .ip(sensor.getIp())
