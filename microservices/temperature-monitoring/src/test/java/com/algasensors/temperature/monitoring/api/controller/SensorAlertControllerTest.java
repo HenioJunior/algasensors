@@ -86,7 +86,6 @@ class SensorAlertControllerTest {
     @DisplayName("Deve lançar exceção ao buscar alerta inexistente")
     void shouldThrowNotFoundExceptionWhenAlertDoesNotExist() {
         SensorId sensorId = SensorId.of(1L);
-        SensorAlert sensorAlert = new SensorAlert();
 
         when(findSensorAlertByIdUseCase.execute(sensorId))
                 .thenThrow(new SensorAlertNotFoundException(sensorId));

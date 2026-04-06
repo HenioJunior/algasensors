@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class StringToTSIDDeserializer extends JsonDeserializer<TSID> {
     @Override
-    public TSID deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+    public TSID deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         return TSID.from(jsonParser.getText());
     }
 }

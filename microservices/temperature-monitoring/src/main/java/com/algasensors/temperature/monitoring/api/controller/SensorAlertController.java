@@ -29,7 +29,7 @@ public class SensorAlertController {
 
     @GetMapping("{sensorId}/alert")
     ResponseEntity<SensorAlertResponse> getAlertById(@PathVariable("sensorId") SensorId sensorId) {
-        SensorAlert sensorAlert = findSensorAlertByIdUseCase.execute(sensorId);;
+        SensorAlert sensorAlert = findSensorAlertByIdUseCase.execute(sensorId);
         return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
     }
 
