@@ -2,6 +2,7 @@ package com.algasensors.temperature.monitoring.domain.model;
 
 import com.algasensors.temperature.monitoring.common.IdGenerator;
 import io.hypersistence.tsid.TSID;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -17,15 +18,12 @@ import java.util.Objects;
 @EqualsAndHashCode
 public class SensorId implements Serializable {
 
+    @Column(name = "sensor_id")
     private TSID value;
 
     public SensorId(TSID value) {
         this.value = Objects.requireNonNull(value);
     }
-
-//    public static SensorId of(TSID value) {
-//        return new SensorId(value);
-//    }
 
     public static SensorId of(long value) {
         return new SensorId(TSID.from(value));
@@ -34,10 +32,6 @@ public class SensorId implements Serializable {
     public static SensorId generate() {
         return new SensorId(IdGenerator.generateTSID());
     }
-
-//    public long toLong() {
-//        return value.toLong();
-//    }
 
     @Override
     public String toString() {

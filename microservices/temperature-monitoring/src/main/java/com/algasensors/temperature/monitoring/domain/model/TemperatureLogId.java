@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TemperatureLogId implements Serializable {
 
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "temperature_id", nullable = false, updatable = false)
     private String value;
 
     public TemperatureLogId(TSID value) {

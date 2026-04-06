@@ -36,5 +36,4 @@ public class FindSensorDetailUseCaseImpl implements FindSensorDetailUseCase {
 
         return new Result(sensor, monitoring);
     }
-
 }
