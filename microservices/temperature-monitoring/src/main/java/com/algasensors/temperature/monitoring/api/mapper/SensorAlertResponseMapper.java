@@ -23,7 +23,7 @@ public class SensorAlertResponseMapper {
 
     public SensorAlertResponse toResponse(SensorAlert sensorAlert) {
         return SensorAlertResponse.builder()
-                .id(sensorAlert.getId().getValue())
+                .id(sensorAlert.getId())
                 .maxTemperature(sensorAlert.getMaxTemperature())
                 .minTemperature(sensorAlert.getMinTemperature())
                 .build();

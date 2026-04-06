@@ -16,25 +16,25 @@ import java.util.Objects;
 @EqualsAndHashCode
 public class SensorId implements Serializable {
 
-    private TSID sensorValue;
+    private TSID id;
 
-    public SensorId(TSID sensorValue) {
-        Objects.requireNonNull(sensorValue);
-        this.sensorValue = sensorValue;
+    public SensorId(TSID id) {
+        Objects.requireNonNull(id);
+        this.id = id;
     }
 
-    public SensorId(Long sensorValue) {
-        Objects.requireNonNull(sensorValue);
-        this.sensorValue = TSID.from(sensorValue);
+    public SensorId(Long id) {
+        Objects.requireNonNull(id);
+        this.id = TSID.from(id);
     }
 
-    public SensorId(String sensorValue) {
-        Objects.requireNonNull(sensorValue);
-        this.sensorValue = TSID.from(sensorValue);
+    public SensorId(String id) {
+        Objects.requireNonNull(id);
+        this.id = TSID.from(id);
     }
 
     @Override
     public String toString() {
-        return sensorValue.toString();
+        return id.toString();
     }
 }
