@@ -20,12 +20,12 @@ public class SensorId implements Serializable {
     private TSID value;
 
     public SensorId(TSID value) {
-        this.value = Objects.requireNonNull(value);;
+        this.value = Objects.requireNonNull(value);
     }
 
-    public static SensorId of(TSID value) {
-        return new SensorId(value);
-    }
+//    public static SensorId of(TSID value) {
+//        return new SensorId(value);
+//    }
 
     public static SensorId of(long value) {
         return new SensorId(TSID.from(value));
@@ -35,13 +35,9 @@ public class SensorId implements Serializable {
         return new SensorId(IdGenerator.generateTSID());
     }
 
-    public TSID getValue() {
-        return value;
-    }
-
-    public long toLong() {
-        return value.toLong();
-    }
+//    public long toLong() {
+//        return value.toLong();
+//    }
 
     @Override
     public String toString() {

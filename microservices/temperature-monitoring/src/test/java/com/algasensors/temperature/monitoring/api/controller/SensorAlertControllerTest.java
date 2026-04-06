@@ -6,11 +6,10 @@ import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
-import com.algasensors.temperature.monitoring.domain.repository.SensorAlertRepository;
-import io.hypersistence.tsid.TSID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,12 +57,12 @@ class SensorAlertControllerTest {
                 .thenReturn(responseMock);
 
         // Act
-        ResponseEntity<SensorAlertResponse> response = controller.getAlert(SensorId.of(1L));
+        ResponseEntity<SensorAlertResponse> response = controller.getAlertById(SensorId.of(1L));
 
         // Assert
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(responseMock, response.getBody());
     }
 
@@ -71,13 +70,13 @@ class SensorAlertControllerTest {
 
     @Test
     @DisplayName("Deve retornar 404 ao buscar alerta inexistente")
-    void shouldThrowNotFoundWhenGetAlertAndAlertDoesNotExist() {
+    void shouldThrowNotFoundWhenGetAlertAndAlertByIdDoesNotExist() {
         SensorId sensorId = SensorId.of(1L);
 
         when(sensorAlertGateway.findById(sensorId))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> controller.getAlert(sensorId))
+        assertThatThrownBy(() -> controller.getAlertById(sensorId))
                 .isInstanceOf(ResponseStatusException.class)
                 .extracting("statusCode.value")
                 .isEqualTo(404);
@@ -89,8 +88,8 @@ class SensorAlertControllerTest {
     @DisplayName("Deve criar alerta com sucesso")
     void shouldCreateAlertSuccessfully() {
         SensorAlertRequest request = new SensorAlertRequest();
-        request.setMinTemperature(new BigDecimal(12.5));
-        request.setMaxTemperature(new BigDecimal(40.0));
+        request.setMinTemperature(new BigDecimal("12.5"));
+        request.setMaxTemperature(new BigDecimal("40.0"));
 
         when(sensorAlertResponseMapper.toResponse(any(SensorAlert.class)))
                 .thenReturn(responseMock);
@@ -115,13 +114,13 @@ class SensorAlertControllerTest {
 
         SensorAlert existingAlert = SensorAlert.builder()
                 .id(sensorId)
-                .minTemperature(new BigDecimal(10.0))
-                .maxTemperature(new BigDecimal(30.0))
+                .minTemperature(new BigDecimal("10.0"))
+                .maxTemperature(new BigDecimal("30.0"))
                 .build();
 
         SensorAlertRequest request = new SensorAlertRequest();
-        request.setMinTemperature(new BigDecimal(15.0));
-        request.setMaxTemperature(new BigDecimal(45.0));
+        request.setMinTemperature(new BigDecimal("15.0"));
+        request.setMaxTemperature(new BigDecimal("45.0"));
 
         when(sensorAlertGateway.findById(sensorId))
                 .thenReturn(Optional.of(existingAlert));
@@ -163,8 +162,8 @@ class SensorAlertControllerTest {
 
         SensorAlert existingAlert = SensorAlert.builder()
                 .id(sensorId)
-                .minTemperature(new BigDecimal(8.0))
-                .maxTemperature(new BigDecimal(28.0))
+                .minTemperature(new BigDecimal("8.0"))
+                .maxTemperature(new BigDecimal("28.0"))
                 .build();
 
         when(sensorAlertGateway.findById(sensorId))

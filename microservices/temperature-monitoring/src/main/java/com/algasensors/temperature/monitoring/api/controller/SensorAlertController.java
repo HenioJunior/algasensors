@@ -4,11 +4,13 @@ import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapp
 import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
-import com.algasensors.temperature.monitoring.common.IdGenerator;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,18 @@ public class SensorAlertController {
 
 
     @GetMapping("{sensorId}/alert")
-    ResponseEntity<SensorAlertResponse> getAlert(@PathVariable("sensorId") SensorId sensorId) {
+    ResponseEntity<SensorAlertResponse> getAlertById(@PathVariable("sensorId") SensorId sensorId) {
 
         SensorAlert sensorAlert = getSensorAlert(sensorId);
 
         return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
     }
+
+    @GetMapping
+    public Page<SensorAlertResponse> findAll(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
+        return sensorAlertGateway.findAll(pageable).map(sensorAlertResponseMapper::toResponse);
+    }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -40,13 +48,12 @@ public class SensorAlertController {
     }
 
     private static SensorAlert getSensorAlert(SensorAlertRequest input) {
-        SensorAlert sensorAlert = SensorAlert
+        return SensorAlert
                 .builder()
                 .id(SensorId.generate())
                 .minTemperature(input.getMinTemperature())
                 .maxTemperature(input.getMaxTemperature())
                 .build();
-        return sensorAlert;
     }
 
     @PutMapping("{sensorId}/alert")
