@@ -16,7 +16,4 @@ public interface SensorAlertGateway {
     void delete(SensorAlert sensorAlert);
 
     Optional<SensorAlert> findById(SensorId sensorId);
-
-
-
 }

@@ -4,6 +4,8 @@ import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapp
 import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
+import com.algasensors.temperature.monitoring.application.usecase.FindSensorAlertByIdUseCase;
+import com.algasensors.temperature.monitoring.domain.exception.SensorAlertNotFoundException;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import static org.mockito.Mockito.*;
 
 class SensorAlertControllerTest {
 
+    private FindSensorAlertByIdUseCase findSensorAlertByIdUseCase;
     private SensorAlertGateway sensorAlertGateway;
     private SensorAlertResponseMapper sensorAlertResponseMapper;
     private SensorAlertResponse responseMock;
@@ -31,12 +34,13 @@ class SensorAlertControllerTest {
 
     @BeforeEach
    void setUp() {
+        findSensorAlertByIdUseCase = mock(FindSensorAlertByIdUseCase.class);
         sensorAlertGateway = mock(SensorAlertGateway.class);
         sensorAlertResponseMapper = mock(SensorAlertResponseMapper.class);
-        controller = new SensorAlertController(sensorAlertGateway, sensorAlertResponseMapper);
+        controller = new SensorAlertController(sensorAlertGateway, findSensorAlertByIdUseCase, sensorAlertResponseMapper);
 
         responseMock = SensorAlertResponse.builder()
-                .id(SensorId.of(1L))
+                .sensorId(SensorId.of(1L))
                 .maxTemperature(BigDecimal.valueOf(40))
                 .minTemperature(BigDecimal.valueOf(10))
                 .build();
@@ -45,9 +49,20 @@ class SensorAlertControllerTest {
     @Test
     @DisplayName("Deve retornar SensorAlertResponse quando o alerta existir")
     void shouldReturnSensorAlertResponseWhenAlertExists() {
-        // Arrange
+        // arrange
+        SensorId sensorId = SensorId.of(1L);
 
-        SensorAlert sensorAlert = mock(SensorAlert.class);
+        SensorAlert sensorAlert = SensorAlert.builder()
+                .sensorId(sensorId)
+                .minTemperature(BigDecimal.valueOf(10))
+                .maxTemperature(BigDecimal.valueOf(40))
+                .build();
+
+        when(findSensorAlertByIdUseCase.execute(any(SensorId.class)))
+                .thenReturn(sensorAlert);
+
+        when(sensorAlertResponseMapper.toResponse(sensorAlert))
+                .thenReturn(responseMock);
 
         when(sensorAlertGateway.findById(SensorId.of(1L)))
                 .thenReturn(Optional.of(sensorAlert));
@@ -68,19 +83,19 @@ class SensorAlertControllerTest {
 
 
     @Test
-    @DisplayName("Deve retornar 404 ao buscar alerta inexistente")
-    void shouldThrowNotFoundWhenGetAlertAndAlertByIdDoesNotExist() {
+    @DisplayName("Deve lançar exceção ao buscar alerta inexistente")
+    void shouldThrowNotFoundExceptionWhenAlertDoesNotExist() {
         SensorId sensorId = SensorId.of(1L);
+        SensorAlert sensorAlert = new SensorAlert();
 
-        when(sensorAlertGateway.findById(sensorId))
-                .thenReturn(Optional.empty());
+        when(findSensorAlertByIdUseCase.execute(sensorId))
+                .thenThrow(new SensorAlertNotFoundException(sensorId));
 
         assertThatThrownBy(() -> controller.getAlertById(sensorId))
-                .isInstanceOf(ResponseStatusException.class)
-                .extracting("statusCode.value")
-                .isEqualTo(404);
+                .isInstanceOf(SensorAlertNotFoundException.class)
+                .hasMessageContaining("1");
 
-        verify(sensorAlertGateway).findById(sensorId);
+        verify(findSensorAlertByIdUseCase).execute(sensorId);
     }
 
     @Test
@@ -99,7 +114,7 @@ class SensorAlertControllerTest {
         SensorAlertResponse response = controller.createAlert(request);
 
         assertThat(response).isNotNull();
-        assertThat(response.getId()).isNotNull();
+        assertThat(response.getSensorId()).isNotNull();
         assertEquals(0, request.getMinTemperature().compareTo(BigDecimal.valueOf(12.5)));
         assertEquals(0, request.getMaxTemperature().compareTo(BigDecimal.valueOf(40.0)));
 
@@ -112,7 +127,7 @@ class SensorAlertControllerTest {
         SensorId sensorId = SensorId.of(1L);
 
         SensorAlert existingAlert = SensorAlert.builder()
-                .id(sensorId)
+                .sensorId(sensorId)
                 .minTemperature(new BigDecimal("10.0"))
                 .maxTemperature(new BigDecimal("30.0"))
                 .build();
@@ -160,7 +175,7 @@ class SensorAlertControllerTest {
         SensorId sensorId = SensorId.of(1L);
 
         SensorAlert existingAlert = SensorAlert.builder()
-                .id(sensorId)
+                .sensorId(sensorId)
                 .minTemperature(new BigDecimal("8.0"))
                 .maxTemperature(new BigDecimal("28.0"))
                 .build();

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class SensorAlertResponse {
-    private SensorId id;
+    private SensorId sensorId;
     private BigDecimal maxTemperature;
     private BigDecimal minTemperature;
 }

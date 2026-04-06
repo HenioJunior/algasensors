@@ -23,7 +23,7 @@ public class SensorAlert {
             name = "value",
             column = @Column(name = "id", columnDefinition = "BIGINT")
     )
-    private SensorId id;
+    private SensorId sensorId;
     private BigDecimal maxTemperature;
     private BigDecimal minTemperature;
 }

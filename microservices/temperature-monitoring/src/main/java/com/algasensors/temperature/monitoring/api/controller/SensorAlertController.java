@@ -4,6 +4,7 @@ import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapp
 import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
+import com.algasensors.temperature.monitoring.application.usecase.FindSensorAlertByIdUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import lombok.NonNull;
@@ -22,19 +23,18 @@ import org.springframework.web.server.ResponseStatusException;
 public class SensorAlertController {
 
     private final SensorAlertGateway sensorAlertGateway;
+    private final FindSensorAlertByIdUseCase findSensorAlertByIdUseCase;
     private final SensorAlertResponseMapper sensorAlertResponseMapper;
 
 
     @GetMapping("{sensorId}/alert")
     ResponseEntity<SensorAlertResponse> getAlertById(@PathVariable("sensorId") SensorId sensorId) {
-
-        SensorAlert sensorAlert = getSensorAlert(sensorId);
-
+        SensorAlert sensorAlert = findSensorAlertByIdUseCase.execute(sensorId);;
         return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
     }
 
     @GetMapping
-    public Page<SensorAlertResponse> findAll(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
+    public Page<SensorAlertResponse> getAlerts(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
         return sensorAlertGateway.findAll(pageable).map(sensorAlertResponseMapper::toResponse);
     }
 
@@ -42,15 +42,15 @@ public class SensorAlertController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SensorAlertResponse createAlert(@RequestBody SensorAlertRequest input) {
-        SensorAlert sensorAlert = getSensorAlert(input);
+        SensorAlert sensorAlert = getSensorAlertById(input);
         sensorAlertGateway.save(sensorAlert);
         return sensorAlertResponseMapper.toResponse(sensorAlert);
     }
 
-    private static SensorAlert getSensorAlert(SensorAlertRequest input) {
+    private static SensorAlert getSensorAlertById(SensorAlertRequest input) {
         return SensorAlert
                 .builder()
-                .id(SensorId.generate())
+                .sensorId(SensorId.generate())
                 .minTemperature(input.getMinTemperature())
                 .maxTemperature(input.getMaxTemperature())
                 .build();
@@ -59,7 +59,7 @@ public class SensorAlertController {
     @PutMapping("{sensorId}/alert")
     public void updateAlert(@PathVariable("sensorId") SensorId sensorId,
                             @RequestBody SensorAlertRequest input) {
-        SensorAlert sensorAlert = getSensorAlert(sensorId);
+        SensorAlert sensorAlert = getSensorAlertById(sensorId);
         sensorAlert.setMaxTemperature(input.getMaxTemperature());
         sensorAlert.setMinTemperature(input.getMinTemperature());
         sensorAlertGateway.save(sensorAlert);
@@ -68,12 +68,12 @@ public class SensorAlertController {
     @DeleteMapping("{sensorId}/alert")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAlert(@PathVariable("sensorId") SensorId sensorId) {
-        SensorAlert sensorAlert = getSensorAlert(sensorId);
+        SensorAlert sensorAlert = getSensorAlertById(sensorId);
         sensorAlertGateway.delete(sensorAlert);
     }
 
 
-    private @NonNull SensorAlert getSensorAlert(SensorId sensorId) {
+    private @NonNull SensorAlert getSensorAlertById(SensorId sensorId) {
         return sensorAlertGateway.findById(new SensorId(sensorId.getValue()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

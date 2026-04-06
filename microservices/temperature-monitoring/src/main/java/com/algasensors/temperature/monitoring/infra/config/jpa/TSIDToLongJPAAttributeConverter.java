@@ -1,4 +1,4 @@
-package com.algasensors.temperature.monitoring.api.config.jpa;
+package com.algasensors.temperature.monitoring.infra.config.jpa;
 
 import io.hypersistence.tsid.TSID;
 import jakarta.persistence.AttributeConverter;

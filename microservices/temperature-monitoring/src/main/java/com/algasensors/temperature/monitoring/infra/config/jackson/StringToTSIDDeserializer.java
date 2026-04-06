@@ -1,4 +1,4 @@
-package com.algasensors.temperature.monitoring.api.config.jackson;
+package com.algasensors.temperature.monitoring.infra.config.jackson;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

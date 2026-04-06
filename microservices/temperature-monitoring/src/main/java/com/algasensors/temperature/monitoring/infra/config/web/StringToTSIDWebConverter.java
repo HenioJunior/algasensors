@@ -1,4 +1,4 @@
-package com.algasensors.temperature.monitoring.api.config.web;
+package com.algasensors.temperature.monitoring.infra.config.web;
 
 import io.hypersistence.tsid.TSID;
 import org.springframework.core.convert.converter.Converter;
