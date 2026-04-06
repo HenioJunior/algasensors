@@ -11,14 +11,12 @@ import org.springframework.stereotype.Component;
 public class SensorAlertResponseMapper {
 
     public SensorAlert getSensorAlert(SensorAlertRequest input) {
-        SensorAlert sensorAlert = SensorAlert
+        return SensorAlert
                 .builder()
                 .id(new SensorId(IdGenerator.generateTSID()))
                 .minTemperature(input.getMinTemperature())
                 .maxTemperature(input.getMaxTemperature())
                 .build();
-        return sensorAlert;
-
     }
 
     public SensorAlertResponse toResponse(SensorAlert sensorAlert) {

@@ -9,7 +9,6 @@ import com.algasensors.temperature.monitoring.domain.model.SensorId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -140,8 +139,8 @@ class SensorAlertControllerTest {
         SensorId sensorId = SensorId.of(1L);
 
         SensorAlertRequest request = new SensorAlertRequest();
-        request.setMinTemperature(new BigDecimal(15.0));
-        request.setMaxTemperature(new BigDecimal(45.0));
+        request.setMinTemperature(new BigDecimal("15.0"));
+        request.setMaxTemperature(new BigDecimal("45.0"));
 
         when(sensorAlertGateway.findById(sensorId))
                 .thenReturn(Optional.empty());
