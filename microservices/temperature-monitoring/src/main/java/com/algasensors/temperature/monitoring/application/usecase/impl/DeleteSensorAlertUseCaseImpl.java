@@ -3,7 +3,7 @@ package com.algasensors.temperature.monitoring.application.usecase.impl;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
 import com.algasensors.temperature.monitoring.domain.exception.SensorAlertNotFoundException;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

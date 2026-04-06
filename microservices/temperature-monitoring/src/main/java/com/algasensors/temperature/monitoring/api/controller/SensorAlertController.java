@@ -9,7 +9,7 @@ import com.algasensors.temperature.monitoring.application.usecase.UpdateSensorAl
 import com.algasensors.temperature.monitoring.application.usecase.impl.CreateSensorAlertUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.impl.DeleteSensorAlertUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

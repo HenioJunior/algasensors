@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.exception;
 
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 
 public class SensorAlertNotFoundException extends RuntimeException {
     public SensorAlertNotFoundException(SensorId sensorId) {

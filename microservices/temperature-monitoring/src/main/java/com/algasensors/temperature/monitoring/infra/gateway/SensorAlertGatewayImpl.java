@@ -2,7 +2,7 @@ package com.algasensors.temperature.monitoring.infra.gateway;
 
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.repository.SensorAlertRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

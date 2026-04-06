@@ -1,6 +1,8 @@
 package com.algasensors.temperature.monitoring.domain.model;
 
 
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.TemperatureLogId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
 import com.algasensors.temperature.monitoring.api.response.SensorMonitoringResponse;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
 import io.hypersistence.tsid.TSID;
@@ -23,7 +23,7 @@ public class SensorMonitoringController {
         SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
 
         return SensorMonitoringResponse.builder()
-                .id(sensorMonitoring.getId().getValue())
+                .id(sensorMonitoring.getId())
                 .enabled(sensorMonitoring.isEnabled())
                 .lastTemperature(sensorMonitoring.getLastTemperature())
                 .updatedAt(sensorMonitoring.getUpdatedAt())

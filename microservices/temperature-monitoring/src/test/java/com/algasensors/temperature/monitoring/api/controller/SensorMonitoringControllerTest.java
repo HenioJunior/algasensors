@@ -1,7 +1,7 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
 import com.algasensors.temperature.monitoring.api.response.SensorMonitoringResponse;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
 import io.hypersistence.tsid.TSID;

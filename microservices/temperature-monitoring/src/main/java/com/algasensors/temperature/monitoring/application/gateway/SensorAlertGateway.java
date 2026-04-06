@@ -1,7 +1,7 @@
 package com.algasensors.temperature.monitoring.application.gateway;
 
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

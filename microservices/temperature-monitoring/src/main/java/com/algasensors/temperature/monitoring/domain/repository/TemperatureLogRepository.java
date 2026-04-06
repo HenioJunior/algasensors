@@ -1,8 +1,8 @@
 package com.algasensors.temperature.monitoring.domain.repository;
 
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLog;
-import com.algasensors.temperature.monitoring.domain.model.TemperatureLogId;
+import com.algasensors.temperature.monitoring.domain.valueobject.TemperatureLogId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

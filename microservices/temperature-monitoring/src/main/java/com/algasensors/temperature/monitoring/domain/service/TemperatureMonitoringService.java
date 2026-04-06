@@ -4,7 +4,7 @@ package com.algasensors.temperature.monitoring.domain.service;
 import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLog;
-import com.algasensors.temperature.monitoring.domain.model.TemperatureLogId;
+import com.algasensors.temperature.monitoring.domain.valueobject.TemperatureLogId;
 import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
 import com.algasensors.temperature.monitoring.domain.repository.TemperatureLogRepository;
 import jakarta.transaction.Transactional;

@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.service;
 
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.Builder;
 import lombok.Getter;
 
