@@ -40,7 +40,10 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     }
 
     @Override
-    public void create(SensorId sensorId) {
-        restClient.post().uri("/api/sensors/{sensorId}/monitoring/create", sensorId).retrieve().toBodilessEntity();
+    public SensorMonitoringResponse create(SensorId sensorId) {
+        return restClient.post()
+                .uri("/api/sensors/{sensorId}/monitoring/create", sensorId)
+                .retrieve()
+                .body(SensorMonitoringResponse.class);
     }
 }

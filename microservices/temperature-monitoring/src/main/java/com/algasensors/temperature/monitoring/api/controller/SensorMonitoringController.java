@@ -2,6 +2,7 @@ package com.algasensors.temperature.monitoring.api.controller;
 
 import com.algasensors.temperature.monitoring.api.mapper.SensorMonitoringResponseMapper;
 import com.algasensors.temperature.monitoring.api.response.SensorMonitoringResponse;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.CreateMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.DisableSensorMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.EnableSensorMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.FindSensorMonitoringByIdUseCase;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class SensorMonitoringController {
 
     private final FindSensorMonitoringByIdUseCase findSensorMonitoringByIdUseCase;
+    private final CreateMonitoringUseCase createMonitoringUseCase;
     private final EnableSensorMonitoringUseCase enableSensorMonitoringUseCase;
     private final DisableSensorMonitoringUseCase disableSensorMonitoringUseCase;
     private final SensorMonitoringResponseMapper sensorMonitoringResponseMapper;
@@ -25,6 +27,12 @@ public class SensorMonitoringController {
     @GetMapping
     public SensorMonitoringResponse getDetail(@PathVariable("sensorId") SensorId sensorId){
         SensorMonitoring sensorMonitoring = findSensorMonitoringByIdUseCase.execute(sensorId);
+        return sensorMonitoringResponseMapper.toResponse(sensorMonitoring);
+    }
+
+    @PostMapping("/create")
+    public SensorMonitoringResponse create(@PathVariable("sensorId") SensorId sensorId){
+        SensorMonitoring sensorMonitoring = createMonitoringUseCase.execute(sensorId);
         return sensorMonitoringResponseMapper.toResponse(sensorMonitoring);
     }
 

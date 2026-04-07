@@ -1,14 +1,11 @@
 package com.algasensors.device.management.api.response;
 
 import com.algasensors.device.management.domain.valueobject.SensorId;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 
-@Data
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

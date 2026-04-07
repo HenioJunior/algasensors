@@ -6,16 +6,16 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,17 +27,25 @@ public class SensorMonitoring {
     private OffsetDateTime updatedAt;
     private boolean enabled;
 
-    public void enable() {
-        if (Boolean.TRUE.equals(this.enabled)) {
-            return;
-        }
-        this.enabled = Boolean.TRUE;
+    public static SensorMonitoring create(SensorId id) {
+        return SensorMonitoring.builder()
+                .id(id)
+                .lastTemperature(BigDecimal.valueOf(0.0))
+                .updatedAt(OffsetDateTime.now())
+                .enabled(Boolean.TRUE).build();
     }
 
-    public void disable() {
-        if (Boolean.FALSE.equals(this.enabled)) {
-            return;
+    public static void enable(SensorMonitoring sensorMonitoring) {
+        if (sensorMonitoring.isEnabled()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        this.enabled = Boolean.FALSE;
+        sensorMonitoring.enabled = Boolean.TRUE;
+    }
+
+    public static void disable(SensorMonitoring sensorMonitoring) {
+        if (!sensorMonitoring.isEnabled()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        sensorMonitoring.enabled = Boolean.FALSE;
     }
 }

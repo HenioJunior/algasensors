@@ -7,15 +7,13 @@ import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class EnableSensorMonitoringUseCaseImpl implements EnableSensorMonitoringUseCase {
 
-private final SensorMonitoringGateway sensorMonitoringGateway;
+    private final SensorMonitoringGateway sensorMonitoringGateway;
 
 
     @Override
@@ -23,11 +21,7 @@ private final SensorMonitoringGateway sensorMonitoringGateway;
     public void execute(SensorId sensorId) {
         SensorMonitoring sensorMonitoring = sensorMonitoringGateway.findById(sensorId)
                 .orElseThrow(() -> new SensorMonitoringNotFoundException(sensorId));;
-
-        if(sensorMonitoring.isEnabled()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-        sensorMonitoring.setEnabled(true);
+        SensorMonitoring.enable(sensorMonitoring);
         sensorMonitoringGateway.save(sensorMonitoring);
     }
 }

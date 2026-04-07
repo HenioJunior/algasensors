@@ -9,6 +9,5 @@ public interface SensorMonitoringClient {
     void enableMonitoring(SensorId sensorId);
     void disableMonitoring(SensorId sensorId);
     SensorMonitoringResponse getDetail(SensorId sensorId);
-
-    void create(SensorId sensorId);
+    SensorMonitoringResponse create(SensorId sensorId);
 }
