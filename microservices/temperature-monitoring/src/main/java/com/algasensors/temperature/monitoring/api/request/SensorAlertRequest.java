@@ -1,11 +1,12 @@
 package com.algasensors.temperature.monitoring.api.request;
 
 import jakarta.validation.constraints.DecimalMin;
+import lombok.Data;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Getter
+@Data
 public class SensorAlertRequest {
 
     @DecimalMin("0.0")

@@ -22,7 +22,7 @@ public class UpdateSensorAlertUseCaseImpl implements UpdateSensorAlertUseCase {
 
         SensorAlert sensorAlert = sensorAlertGateway.findById(sensorId)
                 .orElseThrow(() -> new SensorAlertNotFoundException(sensorId));
-
         sensorAlert.updateTemperatureRange(request.getMinTemperature(), request.getMaxTemperature());
+        sensorAlertGateway.save(sensorAlert);
     }
 }
