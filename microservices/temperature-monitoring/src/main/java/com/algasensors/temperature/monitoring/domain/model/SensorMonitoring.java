@@ -26,4 +26,18 @@ public class SensorMonitoring {
     private BigDecimal lastTemperature;
     private OffsetDateTime updatedAt;
     private boolean enabled;
+
+    public void enable() {
+        if (Boolean.TRUE.equals(this.enabled)) {
+            return;
+        }
+        this.enabled = Boolean.TRUE;
+    }
+
+    public void disable() {
+        if (Boolean.FALSE.equals(this.enabled)) {
+            return;
+        }
+        this.enabled = Boolean.FALSE;
+    }
 }

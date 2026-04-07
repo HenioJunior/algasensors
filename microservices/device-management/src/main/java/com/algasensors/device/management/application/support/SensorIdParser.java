@@ -1,7 +1,7 @@
 package com.algasensors.device.management.application.support;
 
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import io.hypersistence.tsid.TSID;
 import org.springframework.stereotype.Component;
 

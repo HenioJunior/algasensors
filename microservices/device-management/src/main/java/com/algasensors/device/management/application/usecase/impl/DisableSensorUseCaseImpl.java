@@ -5,9 +5,10 @@ import com.algasensors.device.management.application.usecase.DisableSensorUseCas
 import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import com.algasensors.device.management.infra.client.SensorMonitoringClient;
 import io.hypersistence.tsid.TSID;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class DisableSensorUseCaseImpl implements DisableSensorUseCase {
     private final SensorIdParser sensorIdParser;
 
     @Override
+    @Transactional
     public void execute(Command command) {
         SensorId sensorId = sensorIdParser.parse(command.sensorId());
 
@@ -29,7 +31,6 @@ public class DisableSensorUseCaseImpl implements DisableSensorUseCase {
         sensor.disable();
         sensorGateway.save(sensor);
 
-        TSID tsid = sensorId.getId();
-        sensorMonitoringClient.disableMonitoring(tsid);
+        sensorMonitoringClient.disableMonitoring(sensorId);
     }
 }

@@ -1,6 +1,6 @@
 package com.algasensors.device.management.application.usecase;
 
-import com.algasensors.device.management.api.response.SensorMonitoringOutput;
+import com.algasensors.device.management.api.response.SensorMonitoringResponse;
 import com.algasensors.device.management.domain.model.Sensor;
 
 public interface FindSensorDetailUseCase {
@@ -12,7 +12,7 @@ public interface FindSensorDetailUseCase {
 
     record Result(
             Sensor sensor,
-            SensorMonitoringOutput monitoring
+            SensorMonitoringResponse monitoring
     ) {
     }
 }

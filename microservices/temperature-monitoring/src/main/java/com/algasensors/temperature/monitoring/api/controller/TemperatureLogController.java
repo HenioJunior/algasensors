@@ -3,7 +3,7 @@ package com.algasensors.temperature.monitoring.api.controller;
 import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLog;
-import com.algasensors.temperature.monitoring.domain.repository.TemperatureLogRepository;
+import com.algasensors.temperature.monitoring.persistence.repository.TemperatureLogRepository;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

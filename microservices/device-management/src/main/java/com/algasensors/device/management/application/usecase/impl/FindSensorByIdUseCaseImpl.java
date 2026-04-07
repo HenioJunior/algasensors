@@ -5,7 +5,7 @@ import com.algasensors.device.management.application.usecase.FindSensorByIdUseCa
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

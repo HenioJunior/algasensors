@@ -5,7 +5,8 @@ import com.algasensors.device.management.application.usecase.DeleteSensorUseCase
 import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class DeleteSensorUseCaseImpl implements DeleteSensorUseCase {
     private final SensorIdParser sensorIdParser;
 
     @Override
+    @Transactional
     public void execute(Command command) {
         SensorId sensorId = sensorIdParser.parse(command.sensorId());
 

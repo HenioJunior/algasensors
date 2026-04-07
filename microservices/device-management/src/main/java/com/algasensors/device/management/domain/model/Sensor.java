@@ -1,5 +1,6 @@
 package com.algasensors.device.management.domain.model;
 
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -77,12 +78,4 @@ public class Sensor {
         }
         this.enabled = Boolean.FALSE;
     }
-
-
-
-
-
-
-
-
 }

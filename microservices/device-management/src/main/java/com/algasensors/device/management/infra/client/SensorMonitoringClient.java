@@ -1,11 +1,14 @@
 package com.algasensors.device.management.infra.client;
 
-import com.algasensors.device.management.api.response.SensorMonitoringOutput;
+import com.algasensors.device.management.api.response.SensorMonitoringResponse;
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import io.hypersistence.tsid.TSID;
 
 public interface SensorMonitoringClient {
 
-    void enableMonitoring(TSID sensorId);
-    void disableMonitoring(TSID sensorId);
-    SensorMonitoringOutput getDetail(TSID sensorId);
+    void enableMonitoring(SensorId sensorId);
+    void disableMonitoring(SensorId sensorId);
+    SensorMonitoringResponse getDetail(SensorId sensorId);
+
+    void create(SensorId sensorId);
 }

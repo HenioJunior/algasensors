@@ -7,7 +7,7 @@ import com.algasensors.device.management.application.usecase.impl.EnableSensorUs
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import com.algasensors.device.management.infra.client.impl.SensorMonitoringClientImpl;
 import io.hypersistence.tsid.TSID;
 import org.junit.jupiter.api.Test;
@@ -40,8 +40,7 @@ class EnableSensorUseCaseImplTest {
 
     @Test
     void shouldEnableSensorAndMonitoringSuccessfully() {
-        TSID tsid = TSID.fast();
-        SensorId sensorId = new SensorId(tsid);
+        SensorId sensorId = SensorId.generate();
 
         Sensor sensor = Sensor.builder()
                 .id(sensorId)
@@ -53,7 +52,7 @@ class EnableSensorUseCaseImplTest {
                 .enabled(false)
                 .build();
 
-        EnableSensorUseCase.Command command = new EnableSensorUseCase.Command(tsid.toString());
+        EnableSensorUseCase.Command command = new EnableSensorUseCase.Command(sensorId.toString());
 
         when(sensorIdParser.parse(command.sensorId())).thenReturn(sensorId);
         when(sensorGateway.findById(sensorId)).thenReturn(Optional.of(sensor));
@@ -67,7 +66,7 @@ class EnableSensorUseCaseImplTest {
         inOrder.verify(sensorIdParser).parse(command.sensorId());
         inOrder.verify(sensorGateway).findById(sensorId);
         inOrder.verify(sensorGateway).save(sensor);
-        inOrder.verify(sensorMonitoringClient).enableMonitoring(tsid);
+        inOrder.verify(sensorMonitoringClient).enableMonitoring(sensorId);
 
         verifyNoMoreInteractions(sensorGateway, sensorMonitoringClient);
     }

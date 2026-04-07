@@ -1,5 +1,6 @@
 package com.algasensors.device.management.api.response;
 
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class SensorResponse {
 
-    private String id;
+    private SensorId id;
     private String name;
     private String ip;
     private String location;

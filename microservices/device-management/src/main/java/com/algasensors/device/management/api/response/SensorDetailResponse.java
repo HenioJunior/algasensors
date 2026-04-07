@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SensorDetailResponse {
     private SensorResponse sensor;
-    private SensorMonitoringOutput monitoring;
+    private SensorMonitoringResponse monitoring;
 }

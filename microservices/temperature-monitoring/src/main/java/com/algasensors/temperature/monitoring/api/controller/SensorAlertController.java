@@ -3,11 +3,11 @@ package com.algasensors.temperature.monitoring.api.controller;
 import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapper;
 import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
-import com.algasensors.temperature.monitoring.application.usecase.FindSensorAlertByIdUseCase;
-import com.algasensors.temperature.monitoring.application.usecase.FindSensorAlertsUseCase;
-import com.algasensors.temperature.monitoring.application.usecase.UpdateSensorAlertUseCase;
-import com.algasensors.temperature.monitoring.application.usecase.impl.CreateSensorAlertUseCase;
-import com.algasensors.temperature.monitoring.application.usecase.impl.DeleteSensorAlertUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.FindSensorAlertByIdUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.FindSensorAlertsUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.UpdateSensorAlertUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.impl.CreateSensorAlertUseCaseImpl;
+import com.algasensors.temperature.monitoring.application.usecase.alert.DeleteSensorAlertUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class SensorAlertController {
     private final FindSensorAlertsUseCase findSensorAlertsUseCase;
     private final FindSensorAlertByIdUseCase findSensorAlertByIdUseCase;
     private final SensorAlertResponseMapper sensorAlertResponseMapper;
-    private final CreateSensorAlertUseCase createSensorAlertUseCase;
+    private final CreateSensorAlertUseCaseImpl createSensorAlertUseCaseImpl;
     private final UpdateSensorAlertUseCase updateSensorAlertUseCase;
     private final DeleteSensorAlertUseCase deleteSensorAlertUseCase;
 
@@ -47,7 +47,7 @@ public class SensorAlertController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SensorAlertResponse createAlert(@RequestBody SensorAlertRequest request) {
-        SensorAlert sensorAlert = createSensorAlertUseCase.execute(request);
+        SensorAlert sensorAlert = createSensorAlertUseCaseImpl.execute(request);
         return sensorAlertResponseMapper.toResponse(sensorAlert);
     }
 

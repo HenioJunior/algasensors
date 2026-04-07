@@ -1,11 +1,12 @@
 package com.algasensors.device.management.application.usecase.impl;
 
 
+import com.algasensors.device.management.application.gateway.MonitoringGateway;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.CreateSensorUseCase;
-import com.algasensors.device.management.common.IdGenerator;
 import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Service;
 public class CreateSensorUseCaseImpl implements CreateSensorUseCase {
 
     private final SensorGateway sensorGateway;
+    private final MonitoringGateway monitoringGateway;
 
     @Override
+    @Transactional
     public Sensor execute(CreateSensorCommand command) {
         Sensor sensor = Sensor.create(
-                new SensorId(IdGenerator.generateTSID()),
+                SensorId.generate(),
                 command.name(),
                 command.location(),
                 command.ip(),

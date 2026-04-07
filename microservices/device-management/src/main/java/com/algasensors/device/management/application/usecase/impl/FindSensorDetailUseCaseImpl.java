@@ -1,12 +1,12 @@
 package com.algasensors.device.management.application.usecase.impl;
 
-import com.algasensors.device.management.api.response.SensorMonitoringOutput;
+import com.algasensors.device.management.api.response.SensorMonitoringResponse;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.FindSensorDetailUseCase;
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
-import com.algasensors.device.management.domain.model.SensorId;
+import com.algasensors.device.management.domain.valueobject.SensorId;
 import com.algasensors.device.management.infra.client.SensorMonitoringClient;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +21,18 @@ public class FindSensorDetailUseCaseImpl implements FindSensorDetailUseCase {
 
     @Override
     public Result execute(Query query) {
-        final TSID tsid;
+        final SensorId sensorId;
 
         try {
-            tsid = TSID.from(query.sensorId());
+            sensorId = SensorId.of(query.sensorId());
         } catch (Exception ex) {
             throw new InvalidSensorIdException(query.sensorId());
         }
 
-        Sensor sensor = sensorGateway.findById(new SensorId(tsid))
+        Sensor sensor = sensorGateway.findById(sensorId)
                 .orElseThrow(() -> new SensorNotFoundException(query.sensorId()));
 
-        SensorMonitoringOutput monitoring = sensorMonitoringClient.getDetail(tsid);
+        SensorMonitoringResponse monitoring = sensorMonitoringClient.getDetail(sensorId);
 
         return new Result(sensor, monitoring);
     }
