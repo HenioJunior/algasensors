@@ -1,7 +1,7 @@
 package com.algasensors.temperature.monitoring.application.usecase.monitoring.impl;
 
 import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
-import com.algasensors.temperature.monitoring.application.usecase.monitoring.FindSensorMonitoringByIdUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.ValidateSensorMonitoringExistsUseCase;
 import com.algasensors.temperature.monitoring.domain.exception.SensorMonitoringNotFoundException;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FindSensorMonitoringByIdUseCaseImpl implements FindSensorMonitoringByIdUseCase {
+public class ValidateSensorMonitoringExistsUseCaseImpl implements ValidateSensorMonitoringExistsUseCase {
 
     private final SensorMonitoringGateway sensorMonitoringGateway;
 

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/sensors/")
+@RequestMapping("/api/sensors")
 public class SensorAlertController {
 
     private final FindSensorAlertsUseCase findSensorAlertsUseCase;
@@ -31,33 +31,32 @@ public class SensorAlertController {
     private final DeleteSensorAlertUseCase deleteSensorAlertUseCase;
 
 
-    @GetMapping("{sensorId}/alert")
-    public ResponseEntity<SensorAlertResponse> getAlertById(@PathVariable("sensorId") SensorId sensorId) {
-        SensorAlert sensorAlert = findSensorAlertByIdUseCase.execute(sensorId);
-        return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
-    }
-
     @GetMapping
     public Page<SensorAlertResponse> getAlerts(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
         return findSensorAlertsUseCase.execute(pageable)
                 .map(sensorAlertResponseMapper::toResponse);
     }
 
+    @GetMapping("/{sensorId}")
+    public ResponseEntity<SensorAlertResponse> getAlertById(@PathVariable("sensorId") SensorId sensorId) {
+        SensorAlert sensorAlert = findSensorAlertByIdUseCase.execute(sensorId);
+        return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
+    }
 
-    @PostMapping
+    @PostMapping("/{sensorId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public SensorAlertResponse createAlert(@RequestBody SensorAlertRequest request) {
-        SensorAlert sensorAlert = createSensorAlertUseCaseImpl.execute(request);
+    public SensorAlertResponse createAlert(@PathVariable("sensorId") SensorId sensorId, @RequestBody SensorAlertRequest request) {
+        SensorAlert sensorAlert = createSensorAlertUseCaseImpl.execute(sensorId, request);
         return sensorAlertResponseMapper.toResponse(sensorAlert);
     }
 
-    @PutMapping("{sensorId}/alert")
+    @PutMapping("/{sensorId}")
     public void updateAlert(@PathVariable("sensorId") SensorId sensorId,
                             @RequestBody SensorAlertRequest request) {
         updateSensorAlertUseCase.execute(sensorId, request);
     }
 
-    @DeleteMapping("{sensorId}/alert")
+    @DeleteMapping("/{sensorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAlert(@PathVariable("sensorId") SensorId sensorId) {
         deleteSensorAlertUseCase.execute(sensorId);

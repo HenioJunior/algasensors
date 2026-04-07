@@ -31,13 +31,13 @@ public class SensorController {
     private final SensorDetailResponseMapper sensorDetailResponseMapper;
 
     @GetMapping
-    public Page<SensorResponse> search(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
+    public Page<SensorResponse> getSensors(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
         return findSensorsUseCase.execute(pageable)
                 .map(sensorResponseMapper::toResponse);
     }
 
     @GetMapping("/{sensorId}")
-    public SensorResponse findById(@PathVariable("sensorId") String sensorId) {
+    public SensorResponse getSensorById(@PathVariable("sensorId") String sensorId) {
         var query = new FindSensorByIdUseCase.Query(sensorId);
         var sensor = findSensorByIdUseCase.execute(query);
         return sensorResponseMapper.toResponse(sensor);
