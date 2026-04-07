@@ -37,14 +37,14 @@ public class SensorController {
     }
 
     @GetMapping("/{sensorId}")
-    public SensorResponse findById(@PathVariable String sensorId) {
+    public SensorResponse findById(@PathVariable("sensorId") String sensorId) {
         var query = new FindSensorByIdUseCase.Query(sensorId);
         var sensor = findSensorByIdUseCase.execute(query);
         return sensorResponseMapper.toResponse(sensor);
     }
 
     @GetMapping("/{sensorId}/detail")
-    public SensorDetailResponse findDetailById(@PathVariable String sensorId) {
+    public SensorDetailResponse findDetailById(@PathVariable("sensorId") String sensorId) {
         var query = new FindSensorDetailUseCase.Query(sensorId);
         var result = findSensorDetailUseCase.execute(query);
         return sensorDetailResponseMapper.toResponse(result);
@@ -67,7 +67,7 @@ public class SensorController {
     }
 
     @PutMapping("/{sensorId}")
-    public SensorResponse update(@PathVariable String sensorId,
+    public SensorResponse update(@PathVariable("sensorId") String sensorId,
                                  @Valid @RequestBody CreateSensorRequest request) {
         var command = new UpdateSensorUseCase.Command(
                 sensorId,
@@ -84,19 +84,19 @@ public class SensorController {
 
     @PutMapping("/{sensorId}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable String sensorId) {
+    public void enable(@PathVariable("sensorId") String sensorId) {
         enableSensorUseCase.execute(new EnableSensorUseCase.Command(sensorId));
     }
 
     @DeleteMapping("/{sensorId}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disable(@PathVariable String sensorId) {
+    public void disable(@PathVariable("sensorId") String sensorId) {
         disableSensorUseCase.execute(new DisableSensorUseCase.Command(sensorId));
     }
 
     @DeleteMapping("/{sensorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String sensorId) {
+    public void delete(@PathVariable("sensorId") String sensorId) {
         deleteSensorUseCase.execute(new DeleteSensorUseCase.Command(sensorId));
     }
 

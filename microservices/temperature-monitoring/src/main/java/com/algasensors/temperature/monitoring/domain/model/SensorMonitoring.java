@@ -21,7 +21,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class SensorMonitoring {
     @Id
-    @AttributeOverride(name = "value", column = @Column(name="id", columnDefinition = "BIGINT"))
+    @AttributeOverride(name = "id", column = @Column(name="id", columnDefinition = "BIGINT"))
     private SensorId id;
     private BigDecimal lastTemperature;
     private OffsetDateTime updatedAt;

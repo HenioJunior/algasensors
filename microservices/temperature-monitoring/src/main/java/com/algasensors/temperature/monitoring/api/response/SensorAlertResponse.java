@@ -3,13 +3,14 @@ package com.algasensors.temperature.monitoring.api.response;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Data
+@Getter
 @Builder
 public class SensorAlertResponse {
-    private SensorId sensorId;
+    private SensorId id;
     private BigDecimal maxTemperature;
     private BigDecimal minTemperature;
 }

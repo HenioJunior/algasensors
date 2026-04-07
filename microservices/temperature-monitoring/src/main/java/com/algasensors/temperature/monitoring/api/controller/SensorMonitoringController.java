@@ -1,6 +1,8 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
+import com.algasensors.temperature.monitoring.api.mapper.SensorMonitoringResponseMapper;
 import com.algasensors.temperature.monitoring.api.response.SensorMonitoringResponse;
+import com.algasensors.temperature.monitoring.application.usecase.FindSensorMonitoringByIdUseCase;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
@@ -16,18 +18,14 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class SensorMonitoringController {
 
+    private final FindSensorMonitoringByIdUseCase findSensorMonitoringByIdUseCase;
+    private final SensorMonitoringResponseMapper sensorMonitoringResponseMapper;
     private final SensorMonitoringRepository sensorMonitoringRepository;
 
     @GetMapping
     public SensorMonitoringResponse getDetail(@PathVariable("sensorId") TSID sensorId){
-        SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
-
-        return SensorMonitoringResponse.builder()
-                .id(sensorMonitoring.getId())
-                .enabled(sensorMonitoring.isEnabled())
-                .lastTemperature(sensorMonitoring.getLastTemperature())
-                .updatedAt(sensorMonitoring.getUpdatedAt())
-                .build();
+        SensorMonitoring sensorMonitoring = findSensorMonitoringByIdUseCase.execute(new SensorId(sensorId));
+        return sensorMonitoringResponseMapper.toResponse(sensorMonitoring);
     }
 
     private SensorMonitoring findByIdOrDefault(TSID sensorId) {
