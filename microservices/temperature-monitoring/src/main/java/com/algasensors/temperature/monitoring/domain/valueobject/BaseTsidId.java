@@ -1,5 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.valueobject;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.hypersistence.tsid.TSID;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -28,8 +29,9 @@ public abstract class BaseTsidId implements Serializable {
         this.value = Objects.requireNonNull(value);
     }
 
-    public TSID toTSID() {
-        return TSID.from(value);
+    @JsonValue
+    public String getValue() {
+        return value;
     }
 
     @Override

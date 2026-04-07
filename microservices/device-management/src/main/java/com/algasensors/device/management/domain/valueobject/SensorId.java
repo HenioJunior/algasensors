@@ -1,6 +1,7 @@
 package com.algasensors.device.management.domain.valueobject;
 
 import com.algasensors.device.management.common.IdGenerator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.hypersistence.tsid.TSID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -29,16 +30,17 @@ public class SensorId implements Serializable {
         this.value = Objects.requireNonNull(value).toString();
     }
 
-    public static SensorId of(long value) {
-        return new SensorId(TSID.from(value));
-    }
-
     public static SensorId of(String value) {
         return new SensorId(value);
     }
 
     public static SensorId generate() {
         return new SensorId(IdGenerator.generateTSID());
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
     }
 
     @Override
