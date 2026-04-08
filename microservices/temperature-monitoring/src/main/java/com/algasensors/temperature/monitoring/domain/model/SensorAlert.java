@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class SensorAlert {
 
     @EmbeddedId
-    @AttributeOverride(name = "id", column = @Column(name = "id", columnDefinition = "BIGINT"))
+    @AttributeOverride(name = "value", column = @Column(name = "id", nullable = false, updatable = false))
     private SensorId sensorId;
     private BigDecimal maxTemperature;
     private BigDecimal minTemperature;

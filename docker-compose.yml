@@ -1,14 +1,42 @@
 services:
-  algasensors-rabbitmq:
+  rabbitmq:
     image: rabbitmq:3-management
-    restart: no
-    ports:
-      - 5672:5672
-      - 15672:15672
+    container_name: alga-sensors-rabbitmq
+    restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      TZ: America/Sao_Paulo
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     volumes:
-      - algasensors-rabbitmq:/var/lib/rabbitmq/
+      - alga_sensors_rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:16
+    container_name: alga-sensors-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: America/Sao_Paulo
+    ports:
+      - "5432:5432"
+    volumes:
+      - alga_sensors_postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
 volumes:
-  algasensors-rabbitmq:
+  alga_sensors_rabbitmq_data:
+  alga_sensors_postgres_data:

@@ -1,6 +1,6 @@
 package com.algasensors.temperature.processing.api.controller;
 
-import com.algasensors.temperature.processing.api.model.TemperatureLogOutput;
+import com.algasensors.temperature.processing.api.model.TemperatureLogResponse;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class TemperatureProcessingController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data");
         }
 
-        TemperatureLogOutput logoutput = TemperatureLogOutput
+        TemperatureLogResponse logoutput = TemperatureLogResponse
                 .builder()
                 .id(UUID.randomUUID())
                 .sensorId(sensorId)
