@@ -1,9 +1,8 @@
 package com.algasensors.device.management.application.usecase.impl;
 
 import com.algasensors.device.management.application.gateway.SensorGateway;
-import com.algasensors.device.management.application.usecase.DeleteSensorUseCase;
-import com.algasensors.device.management.application.usecase.impl.DeleteSensorUseCaseImpl;
 import com.algasensors.device.management.application.support.SensorIdParser;
+import com.algasensors.device.management.application.usecase.DeleteSensorUseCase;
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
@@ -17,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

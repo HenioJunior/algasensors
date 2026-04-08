@@ -1,7 +1,6 @@
 package com.algasensors.device.management.application.usecase.impl;
 
 import com.algasensors.device.management.application.gateway.SensorGateway;
-import com.algasensors.device.management.application.usecase.impl.FindSensorsUseCaseImpl;
 import com.algasensors.device.management.domain.model.Sensor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

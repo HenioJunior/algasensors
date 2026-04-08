@@ -3,7 +3,6 @@ package com.algasensors.device.management.application.usecase.impl;
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.application.usecase.EnableSensorUseCase;
-import com.algasensors.device.management.application.usecase.impl.EnableSensorUseCaseImpl;
 import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
