@@ -1,4 +1,4 @@
-package com.algasensors.temperature.monitoring.application.usecase.impl;
+package com.algasensors.temperature.monitoring.application.usecase.impl.alert;
 
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
 import com.algasensors.temperature.monitoring.application.usecase.alert.impl.FindSensorAlertByIdUseCaseImpl;

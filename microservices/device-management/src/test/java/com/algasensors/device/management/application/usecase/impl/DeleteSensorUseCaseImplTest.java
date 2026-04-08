@@ -1,4 +1,4 @@
-package com.algasensors.device.management.application.service.impl;
+package com.algasensors.device.management.application.usecase.impl;
 
 import com.algasensors.device.management.application.gateway.SensorGateway;
 import com.algasensors.device.management.application.usecase.DeleteSensorUseCase;

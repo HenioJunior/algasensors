@@ -1,8 +1,7 @@
-package com.algasensors.temperature.monitoring.application.usecase.impl;
+package com.algasensors.temperature.monitoring.application.usecase.impl.alert;
 
-import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
-import com.algasensors.temperature.monitoring.application.usecase.alert.impl.UpdateSensorAlertUseCaseImpl;
+import com.algasensors.temperature.monitoring.application.usecase.alert.impl.DeleteSensorAlertUseCaseImpl;
 import com.algasensors.temperature.monitoring.domain.exception.SensorAlertNotFoundException;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
@@ -13,48 +12,37 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateSensorAlertUseCaseImplTest {
+class DeleteSensorAlertUseCaseImplTest {
 
     @Mock
     private SensorAlertGateway sensorAlertGateway;
 
     @InjectMocks
-    private UpdateSensorAlertUseCaseImpl useCase;
+    private DeleteSensorAlertUseCaseImpl useCase;
 
     private SensorId sensorId;
-    private SensorAlertRequest request;
     private SensorAlert sensorAlert;
 
     @BeforeEach
     void setUp() {
         sensorId = SensorId.generate();
-
-        request = new SensorAlertRequest();
-        request.setMinTemperature(BigDecimal.valueOf(10));
-        request.setMaxTemperature(BigDecimal.valueOf(50));
-
         sensorAlert = mock(SensorAlert.class);
     }
 
     @Test
-    void shouldUpdateSensorAlertSuccessfully() {
+    void shouldDeleteSensorAlertSuccessfully() {
         when(sensorAlertGateway.findById(sensorId)).thenReturn(Optional.of(sensorAlert));
 
-        useCase.execute(sensorId, request);
+        useCase.execute(sensorId);
 
         verify(sensorAlertGateway).findById(sensorId);
-        verify(sensorAlert).updateTemperatureRange(
-                request.getMinTemperature(),
-                request.getMaxTemperature()
-        );
-        verify(sensorAlertGateway).save(sensorAlert);
+        verify(sensorAlertGateway).delete(sensorAlert);
         verifyNoMoreInteractions(sensorAlertGateway);
     }
 
@@ -62,9 +50,10 @@ class UpdateSensorAlertUseCaseImplTest {
     void shouldThrowExceptionWhenSensorAlertDoesNotExist() {
         when(sensorAlertGateway.findById(sensorId)).thenReturn(Optional.empty());
 
-        assertThrows(SensorAlertNotFoundException.class, () -> useCase.execute(sensorId, request));
+        assertThrows(SensorAlertNotFoundException.class, () -> useCase.execute(sensorId));
 
         verify(sensorAlertGateway).findById(sensorId);
-        verify(sensorAlertGateway, never()).save(any());
+        verify(sensorAlertGateway, never()).delete(any());
+        verifyNoMoreInteractions(sensorAlertGateway);
     }
 }

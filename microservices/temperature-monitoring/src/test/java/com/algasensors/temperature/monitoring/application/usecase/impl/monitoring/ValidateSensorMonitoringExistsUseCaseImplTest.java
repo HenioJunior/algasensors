@@ -1,4 +1,4 @@
-package com.algasensors.temperature.monitoring.application.usecase.impl;
+package com.algasensors.temperature.monitoring.application.usecase.impl.monitoring;
 
 import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.impl.ValidateSensorMonitoringExistsUseCaseImpl;
