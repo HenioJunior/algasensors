@@ -14,15 +14,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static com.algasensors.temperature.processing.infra.rabbitmq.RabbitMQConfig.FANOUT_EXCHANGE_NAME;
-
 @RestController
 @RequestMapping("/api/sensors/{sensorId}/temperatures/data")
 @Slf4j
 @RequiredArgsConstructor
 public class TemperatureProcessingController {
 
-    private final RabbitTemplate rabbitTemplate;
 
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
     public void data(@PathVariable("sensorId") TSID sensorId, @RequestBody String input) {
@@ -47,16 +44,6 @@ public class TemperatureProcessingController {
                 .build();
 
         log.info(logoutput.toString());
-
-        String exchange = FANOUT_EXCHANGE_NAME;
-        String routingKey = "";
-        Object payload = logoutput;
-
-        MessagePostProcessor messagePostProcessor =  message -> {
-            message.getMessageProperties().setHeader("sensorId", logoutput.getSensorId().toString());
-            return message;
-        };
-        rabbitTemplate.convertAndSend(exchange, routingKey, payload, messagePostProcessor);
 
     }
 }
