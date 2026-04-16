@@ -4,8 +4,6 @@ import com.algasensors.temperature.processing.api.model.TemperatureLogResponse;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.MessagePostProcessor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,6 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class TemperatureProcessingController {
-
 
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
     public void data(@PathVariable("sensorId") TSID sensorId, @RequestBody String input) {

@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.application.usecase.temperature.impl;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
 import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.UpdateSensorMonitoringFromReadingUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
@@ -18,8 +18,8 @@ public class UpdateSensorMonitoringFromReadingUseCaseImpl implements UpdateSenso
 
     @Override
     @Transactional
-    public void execute(SensorMonitoring sensorMonitoring, TemperatureLogData temperatureLogData) {
-        sensorMonitoring.setLastTemperature(temperatureLogData.getValue());
+    public void execute(SensorMonitoring sensorMonitoring, TemperatureLogResponse temperatureLogResponse) {
+        sensorMonitoring.setLastTemperature(temperatureLogResponse.getValue());
         sensorMonitoring.setUpdatedAt(OffsetDateTime.now());
         sensorMonitoringGateway.save(sensorMonitoring);
     }

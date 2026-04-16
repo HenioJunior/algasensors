@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.application.usecase.temperature.impl;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.ValidateSensorMonitoringExistsUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.CreateTemperatureLogUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.ProcessTemperatureReadingUseCase;
@@ -24,19 +24,19 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
 
     @Override
     @Transactional
-    public void execute(TemperatureLogData temperatureLogData) {
+    public void execute(TemperatureLogResponse temperatureLogResponse) {
         SensorMonitoring sensorMonitoring =
-                validateSensorMonitoringExistsUseCase.execute(temperatureLogData.getSensorId());
+                validateSensorMonitoringExistsUseCase.execute(temperatureLogResponse.getSensorId());
 
         if (!sensorMonitoring.isEnabled()) {
             log.warn("Ignored temperature reading for disabled sensor {}: {}",
-                    temperatureLogData.getSensorId(),
-                    temperatureLogData.getValue());
+                    temperatureLogResponse.getSensorId(),
+                    temperatureLogResponse.getValue());
             return;
         }
 
-        updateSensorMonitoringFromReadingUseCase.execute(sensorMonitoring, temperatureLogData);
-        createTemperatureLogUseCase.execute(temperatureLogData);
-        processTemperatureAlertUseCase.execute(temperatureLogData);
+        updateSensorMonitoringFromReadingUseCase.execute(sensorMonitoring, temperatureLogResponse);
+        createTemperatureLogUseCase.execute(temperatureLogResponse);
+        processTemperatureAlertUseCase.execute(temperatureLogResponse);
     }
 }

@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.application.usecase.temperature.impl;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
 import com.algasensors.temperature.monitoring.application.gateway.TemperatureLogGateway;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.CreateTemperatureLogUseCase;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLog;
@@ -17,17 +17,17 @@ public class CreateTemperatureLogUseCaseImpl implements CreateTemperatureLogUseC
 
     @Override
     @Transactional
-    public TemperatureLog execute(TemperatureLogData temperatureLogData) {
-        String logId = temperatureLogData.getId();
+    public TemperatureLog execute(TemperatureLogResponse temperatureLogResponse) {
+        String logId = temperatureLogResponse.getId();
         if (logId == null) {
             throw new IllegalArgumentException("TemperatureLogData.id is required");
         }
 
         TemperatureLog temperatureLog = TemperatureLog.builder()
                 .id(new TemperatureLogId(logId))
-                .sensorId(temperatureLogData.getSensorId())
-                .temperatureValue(temperatureLogData.getValue())
-                .registeredAt(temperatureLogData.getRegisteredAt())
+                .sensorId(temperatureLogResponse.getSensorId())
+                .temperatureValue(temperatureLogResponse.getValue())
+                .registeredAt(temperatureLogResponse.getRegisteredAt())
                 .build();
 
         return temperatureLogGateway.save(temperatureLog);
