@@ -4,18 +4,17 @@ import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TemperatureLogData {
+@Builder
+public class TemperatureLogResponse {
 private String id;
 private SensorId sensorId;
 private OffsetDateTime registeredAt;
 private BigDecimal value;
+
 }

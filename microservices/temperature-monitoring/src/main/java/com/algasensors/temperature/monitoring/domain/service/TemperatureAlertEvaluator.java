@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.service;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogData;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +10,15 @@ import java.util.Optional;
 @Component
 public class TemperatureAlertEvaluator {
 
-    public AlertEvaluationResult evaluate(TemperatureLogData temperatureLogData,
+    public AlertEvaluationResult evaluate(TemperatureLogResponse temperatureLogResponse,
                                           Optional<SensorAlert> sensorAlertOptional) {
 
-        BigDecimal value = temperatureLogData.getValue();
+        BigDecimal value = temperatureLogResponse.getValue();
 
         if (sensorAlertOptional.isEmpty()) {
             return AlertEvaluationResult.builder()
                     .status(AlertStatus.IGNORED)
-                    .sensorId(temperatureLogData.getSensorId())
+                    .sensorId(temperatureLogResponse.getSensorId())
                     .currentTemperature(value)
                     .build();
         }
@@ -29,7 +29,7 @@ public class TemperatureAlertEvaluator {
                 && value.compareTo(sensorAlert.getMaxTemperature()) >= 0) {
             return AlertEvaluationResult.builder()
                     .status(AlertStatus.MAX_EXCEEDED)
-                    .sensorId(temperatureLogData.getSensorId())
+                    .sensorId(temperatureLogResponse.getSensorId())
                     .currentTemperature(value)
                     .maxTemperature(sensorAlert.getMaxTemperature())
                     .minTemperature(sensorAlert.getMinTemperature())
@@ -40,7 +40,7 @@ public class TemperatureAlertEvaluator {
                 && value.compareTo(sensorAlert.getMinTemperature()) <= 0) {
             return AlertEvaluationResult.builder()
                     .status(AlertStatus.MIN_EXCEEDED)
-                    .sensorId(temperatureLogData.getSensorId())
+                    .sensorId(temperatureLogResponse.getSensorId())
                     .currentTemperature(value)
                     .maxTemperature(sensorAlert.getMaxTemperature())
                     .minTemperature(sensorAlert.getMinTemperature())
@@ -49,7 +49,7 @@ public class TemperatureAlertEvaluator {
 
         return AlertEvaluationResult.builder()
                 .status(AlertStatus.IGNORED)
-                .sensorId(temperatureLogData.getSensorId())
+                .sensorId(temperatureLogResponse.getSensorId())
                 .currentTemperature(value)
                 .maxTemperature(sensorAlert.getMaxTemperature())
                 .minTemperature(sensorAlert.getMinTemperature())
