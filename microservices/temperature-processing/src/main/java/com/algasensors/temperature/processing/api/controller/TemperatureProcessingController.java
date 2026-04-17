@@ -3,7 +3,6 @@ package com.algasensors.temperature.processing.api.controller;
 import com.algasensors.temperature.processing.api.model.SensorId;
 import com.algasensors.temperature.processing.api.model.TemperatureLogResponse;
 import com.algasensors.temperature.processing.infra.kafka.sensor.TemperatureMessage;
-import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/sensors/{sensorId}/temperatures/data")

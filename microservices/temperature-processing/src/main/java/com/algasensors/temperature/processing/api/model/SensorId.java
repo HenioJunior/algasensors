@@ -1,6 +1,5 @@
 package com.algasensors.temperature.processing.api.model;
 
-
 import com.algasensors.temperature.processing.common.IdGenerator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.hypersistence.tsid.TSID;
@@ -25,14 +24,6 @@ public class SensorId implements Serializable {
 
     public SensorId(TSID value) {
         this.value = Objects.requireNonNull(value).toString();
-    }
-
-    public static SensorId of(String value) {
-        return new SensorId(value);
-    }
-
-    public static SensorId generate() {
-        return new SensorId(IdGenerator.generateTSID());
     }
 
     @JsonValue

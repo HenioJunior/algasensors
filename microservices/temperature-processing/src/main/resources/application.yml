@@ -1,8 +1,6 @@
 server:
   port: 8084
-kafka:
-  topic:
-    name: temperature_topic
+
 spring:
   application:
     name: temperature-processing

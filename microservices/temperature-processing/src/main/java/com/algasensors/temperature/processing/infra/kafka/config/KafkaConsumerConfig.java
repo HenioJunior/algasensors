@@ -46,18 +46,14 @@ public class KafkaConsumerConfig {
         ContainerProperties containerProps = new ContainerProperties("temperature_topic");
 
         // Configuração do listener
-        containerProps.setMessageListener(new MessageListener<String, TemperatureMessage>() {
-            @Override
-            public void onMessage(org.apache.kafka.clients.consumer.ConsumerRecord<String, TemperatureMessage> record) {
-                TemperatureMessage message = record.value();
-                System.out.println("Received: " + message);
-                // Aqui você pode implementar o processamento da temperatura
-            }
+        containerProps.setMessageListener((MessageListener<String, TemperatureMessage>)
+                record -> {
+            TemperatureMessage message = record.value();
+            System.out.println("Received: " + message);
+            // Aqui você pode implementar o processamento da temperatura
         });
         // Criando o container de escuta de mensagens para o tópico
-        ConcurrentMessageListenerContainer<String, TemperatureMessage> container =
-                new ConcurrentMessageListenerContainer<>(consumerFactory(), containerProps);
-        return container;
+        return new ConcurrentMessageListenerContainer<>(consumerFactory(), containerProps);
 
     }
 }
