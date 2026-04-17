@@ -1,6 +1,16 @@
 server:
   port: 8084
-
+kafka:
+  topic:
+    name: temperature_topic
 spring:
   application:
     name: temperature-processing
+
+  kafka:
+    consumer:
+      group-id: temperature-processing-group
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+

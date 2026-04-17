@@ -1,18 +1,27 @@
 package com.algasensors.temperature.processing.common;
 
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.impl.TimeBasedEpochGenerator;
+import io.hypersistence.tsid.TSID;
 
-import java.util.UUID;
+import java.util.Optional;
 
 public class IdGenerator {
 
-    private static final TimeBasedEpochGenerator timeBasedEpochGenerator = Generators.timeBasedEpochGenerator();
+    private static final TSID.Factory tsidFactory;
 
-    public IdGenerator() {
+    private IdGenerator() {}
+
+    static {
+        Optional.ofNullable(System.getenv("tsid.node"))
+                .ifPresent(tsidNode -> System.setProperty("tsid.node", tsidNode));
+
+        Optional.ofNullable(System.getenv("tsid.node.count"))
+                .ifPresent(tsidNodeCount -> System.setProperty("tsid.node.count", tsidNodeCount));
+
+        tsidFactory = TSID.Factory.builder().build();
     }
 
-    public static UUID generateTimeBasedUUID() {
-        return timeBasedEpochGenerator.generate();
+    public static TSID generateTSID() {
+        return tsidFactory.generate();
     }
 }
+
