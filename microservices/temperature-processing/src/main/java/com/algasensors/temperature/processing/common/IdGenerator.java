@@ -19,9 +19,5 @@ public class IdGenerator {
 
         tsidFactory = TSID.Factory.builder().build();
     }
-
-    public static TSID generateTSID() {
-        return tsidFactory.generate();
-    }
 }
 
