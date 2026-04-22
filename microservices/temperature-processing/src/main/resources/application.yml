@@ -4,3 +4,12 @@ server:
 spring:
   application:
     name: temperature-processing
+
+  profiles:
+    active: dev
+
+app:
+  kafka:
+    topics:
+      temperature-raw: temperature.raw.v1
+      temperature-processed: temperature.processed.v1
