@@ -16,17 +16,27 @@ spring:
     bootstrap-servers: localhost:9092
 
     consumer:
-      group-id: temperature-processing-dev
+      group-id: temperature-processing
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
       properties:
         spring.json.trusted.packages: "com.algasensors.*"
+        spring.json.use.type.headers: false
         spring.json.value.default.type: com.algasensors.temperature.processing.infra.messaging.dto.TemperatureMessage
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+app:
+  kafka:
+    topics:
+      raw-reading: sensor.temperature.raw.v1
+      processed-reading: sensor.temperature.processed.v1
 
 logging:
   level:

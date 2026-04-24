@@ -23,6 +23,7 @@ class TemperatureProducer(
             TemperatureMessage(
                 sensorId,
                 temperature,
+                "Celsius",
                 timestamp
             )
 

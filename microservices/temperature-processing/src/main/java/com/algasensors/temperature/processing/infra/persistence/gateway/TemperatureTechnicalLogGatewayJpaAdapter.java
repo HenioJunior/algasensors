@@ -19,7 +19,7 @@ public class TemperatureTechnicalLogGatewayJpaAdapter implements TemperatureTech
     @Override
     public void saveReceived(TemperatureReading reading) {
         TemperatureTechnicalLogEntity received = TemperatureTechnicalLogEntity
-                .received(reading.getSensorId(), reading.getTemperature(), reading.getUnit(), reading.getOccurredAt());
+                .received(reading.getSensorId(), reading.getTemperature(), reading.getUnit(), reading.getTimestamp());
         repository.save(received);
     }
 
@@ -29,7 +29,7 @@ public class TemperatureTechnicalLogGatewayJpaAdapter implements TemperatureTech
                 reading.getSensorId(),
                 reading.getTemperature(),
                 reading.getUnit(),
-                reading.getOccurredAt());
+                reading.getTimestamp());
         repository.save(processed);
     }
 

@@ -15,7 +15,7 @@ public class TemperatureRawConsumer {
     }
 
     @KafkaListener(
-            topics = "${app.kafka.topics.temperature-raw}",
+            topics = "${app.kafka.topics.raw-reading}",
             groupId = "${spring.kafka.consumer.group-id}"
     )
     public void listen(TemperatureMessage message) {

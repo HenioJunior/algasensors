@@ -22,7 +22,7 @@ public class TemperatureTechnicalLogEntity {
 
     private Instant occurredAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Instant loggedAt;
 
     @Column(nullable = false, length = 30)

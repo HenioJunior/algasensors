@@ -36,7 +36,7 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
                 sensorId,
                 temperature,
                 message.unit(),
-                message.occurredAt()
+                Instant.parse(message.timestamp())
         );
 
         technicalLogGateway.saveReceived(reading);
@@ -46,7 +46,7 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
                 reading.getSensorId().getValue(),
                 reading.getTemperature().toPlainString(),
                 reading.getUnit(),
-                reading.getOccurredAt(),
+                reading.getTimestamp(),
                 Instant.now(),
                 new TemperatureProcessedEvent.QualityPayload(true, true),
                 new TemperatureProcessedEvent.SourcePayload(
