@@ -8,18 +8,25 @@ import java.time.format.DateTimeFormatter
 
 @Service
 class TemperatureProducer(
-    private val kafkaTemplate: KafkaTemplate<String, TemperatureMessage>
+    private val kafkaTemplate: KafkaTemplate<String, TemperatureMessage>,
+    @Value("\${app.kafka.topics.raw-reading}")
+    private val topicName: String
 ) {
 
-    @Value("\${kafka.topic.name}")
-    lateinit var topicName: String
-
     fun sendTemperature(sensorId: String, temperature: Double) {
-        val timestamp = OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        val temperatureMessage = TemperatureMessage(sensorId, temperature, timestamp)
 
-        // Enviando o JSON para o Kafka
-        kafkaTemplate.send(topicName, sensorId, temperatureMessage)
-        println("Sent: $temperatureMessage")
+        val timestamp =
+            OffsetDateTime.now()
+                .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+        val message =
+            TemperatureMessage(
+                sensorId,
+                temperature,
+                timestamp
+            )
+
+        kafkaTemplate.send(topicName, sensorId, message)
+        println("Sent: $message")
     }
 }

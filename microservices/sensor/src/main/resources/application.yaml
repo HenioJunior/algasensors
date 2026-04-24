@@ -1,20 +1,21 @@
 server:
   port: 8082
 
-kafka:
-  topic:
-    name: temperature-readings
-
 spring:
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      # Altere de StringSerializer para JsonSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
   application:
     name: sensor
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+app:
+  kafka:
+    topics:
+      raw-reading: sensor.temperature.raw.v1
+
   temperature:
     processing:
       url: http://localhost:8084
