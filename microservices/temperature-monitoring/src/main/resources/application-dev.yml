@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/alga_sensors_temperature_monitoring
+    url: jdbc:postgresql://localhost:5432/temperature_monitoring
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
