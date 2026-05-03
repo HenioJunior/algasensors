@@ -1,7 +1,7 @@
 package com.algasensors.temperature.monitoring.infra.messaging.consumer;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.ProcessTemperatureReadingUseCase;
+import com.algasensors.temperature.monitoring.domain.model.TemperatureReading;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.infra.messaging.dto.TemperatureProcessedEvent;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +28,15 @@ public class TemperatureProcessedConsumer {
         log.debug("Received processed temperature reading: {}", event);
 
         try {
-            // Mapeia o evento para o DTO que o Use Case espera
-            // O Use Case atualmente espera TemperatureLogResponse, que é um DTO de saída da API
-            // Em uma refatoração futura, seria ideal o Use Case usar um modelo interno ou o próprio evento
-            TemperatureLogResponse logResponse = TemperatureLogResponse.builder()
+            // Mapeia o evento para o modelo de domínio TemperatureReading
+            TemperatureReading reading = TemperatureReading.builder()
                     .id(event.eventId())
                     .sensorId(SensorId.of(event.sensorId()))
                     .registeredAt(event.occurredAt().atOffset(ZoneOffset.UTC))
                     .value(new BigDecimal(event.temperature()))
                     .build();
 
-            processTemperatureReadingUseCase.execute(logResponse);
+            processTemperatureReadingUseCase.execute(reading);
         } catch (NumberFormatException e) {
             log.error("Failed to parse temperature value: '{}' for sensor: '{}', eventId: '{}'",
                     event.temperature(), event.sensorId(), event.eventId());

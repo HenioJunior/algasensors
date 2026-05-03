@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.application.usecase.temperature.impl;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
+import com.algasensors.temperature.monitoring.domain.model.TemperatureReading;
 import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.CreateMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.CreateTemperatureLogUseCase;
@@ -26,22 +26,22 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
 
     @Override
     @Transactional
-    public void execute(TemperatureLogResponse temperatureLogResponse) {
-        SensorMonitoring sensorMonitoring = sensorMonitoringGateway.findById(temperatureLogResponse.getSensorId())
+    public void execute(TemperatureReading temperatureReading) {
+        SensorMonitoring sensorMonitoring = sensorMonitoringGateway.findById(temperatureReading.getSensorId())
                 .orElseGet(() -> {
-                    log.info("Creating new sensor monitoring for sensor {}", temperatureLogResponse.getSensorId());
-                    return createMonitoringUseCase.execute(temperatureLogResponse.getSensorId());
+                    log.info("Creating new sensor monitoring for sensor {}", temperatureReading.getSensorId());
+                    return createMonitoringUseCase.execute(temperatureReading.getSensorId());
                 });
 
         if (!sensorMonitoring.isEnabled()) {
             log.warn("Ignored temperature reading for disabled sensor {}: {}",
-                    temperatureLogResponse.getSensorId(),
-                    temperatureLogResponse.getValue());
+                    temperatureReading.getSensorId(),
+                    temperatureReading.getValue());
             return;
         }
 
-        updateSensorMonitoringFromReadingUseCase.execute(sensorMonitoring, temperatureLogResponse);
-        createTemperatureLogUseCase.execute(temperatureLogResponse);
-        processTemperatureAlertUseCase.execute(temperatureLogResponse);
+        updateSensorMonitoringFromReadingUseCase.execute(sensorMonitoring, temperatureReading);
+        createTemperatureLogUseCase.execute(temperatureReading);
+        processTemperatureAlertUseCase.execute(temperatureReading);
     }
 }

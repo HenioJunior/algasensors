@@ -1,11 +1,11 @@
 package com.algasensors.temperature.monitoring.application.usecase.temperature.impl;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
 import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.CreateMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.CreateTemperatureLogUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.UpdateSensorMonitoringFromReadingUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
+import com.algasensors.temperature.monitoring.domain.model.TemperatureReading;
 import com.algasensors.temperature.monitoring.domain.service.ProcessTemperatureAlertUseCase;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,12 +38,12 @@ class ProcessTemperatureReadingUseCaseImplTest {
     private ProcessTemperatureReadingUseCaseImpl useCase;
 
     private SensorId sensorId;
-    private TemperatureLogResponse reading;
+    private TemperatureReading reading;
 
     @BeforeEach
     void setUp() {
         sensorId = SensorId.generate();
-        reading = TemperatureLogResponse.builder()
+        reading = TemperatureReading.builder()
                 .sensorId(sensorId)
                 .value(new BigDecimal("25.5"))
                 .build();
