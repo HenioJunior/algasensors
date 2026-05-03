@@ -19,6 +19,7 @@ public class TemperatureRawConsumer {
             groupId = "${spring.kafka.consumer.group-id}"
     )
     public void listen(TemperatureMessage message) {
+        System.out.println("[DEBUG_LOG] Received raw message: " + message);
         processTemperatureReadingUseCase.execute(message);
     }
 }

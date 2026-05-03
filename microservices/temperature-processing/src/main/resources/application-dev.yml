@@ -25,6 +25,7 @@ spring:
         spring.json.trusted.packages: "com.algasensors.*"
         spring.json.use.type.headers: false
         spring.json.value.default.type: com.algasensors.temperature.processing.infra.messaging.dto.TemperatureMessage
+        spring.jackson.deserialization.fail-on-unknown-properties: false
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer

@@ -37,6 +37,7 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
                     message.occurredAt()
             );
 
+            System.out.println("[DEBUG_LOG] Saving technical log for sensor: " + message.sensorId());
             technicalLog = technicalLogGateway.saveReceived(
                     message.messageId(),
                     reading
@@ -68,6 +69,8 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
             );
 
         } catch (Exception ex) {
+            System.err.println("[DEBUG_LOG] Error processing reading: " + ex.getMessage());
+            ex.printStackTrace();
             if (technicalLog != null) {
                 technicalLogGateway.markAsFailed(
                         technicalLog.getId(),

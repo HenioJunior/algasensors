@@ -1,7 +1,8 @@
 package com.algasensors.temperature.monitoring.application.usecase.temperature.impl;
 
 import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
-import com.algasensors.temperature.monitoring.application.usecase.monitoring.ValidateSensorMonitoringExistsUseCase;
+import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.CreateMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.CreateTemperatureLogUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.ProcessTemperatureReadingUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.temperature.UpdateSensorMonitoringFromReadingUseCase;
@@ -17,7 +18,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureReadingUseCase {
 
-    private final ValidateSensorMonitoringExistsUseCase validateSensorMonitoringExistsUseCase;
+    private final SensorMonitoringGateway sensorMonitoringGateway;
+    private final CreateMonitoringUseCase createMonitoringUseCase;
     private final UpdateSensorMonitoringFromReadingUseCase updateSensorMonitoringFromReadingUseCase;
     private final CreateTemperatureLogUseCase createTemperatureLogUseCase;
     private final ProcessTemperatureAlertUseCase processTemperatureAlertUseCase;
@@ -25,8 +27,11 @@ public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureR
     @Override
     @Transactional
     public void execute(TemperatureLogResponse temperatureLogResponse) {
-        SensorMonitoring sensorMonitoring =
-                validateSensorMonitoringExistsUseCase.execute(temperatureLogResponse.getSensorId());
+        SensorMonitoring sensorMonitoring = sensorMonitoringGateway.findById(temperatureLogResponse.getSensorId())
+                .orElseGet(() -> {
+                    log.info("Creating new sensor monitoring for sensor {}", temperatureLogResponse.getSensorId());
+                    return createMonitoringUseCase.execute(temperatureLogResponse.getSensorId());
+                });
 
         if (!sensorMonitoring.isEnabled()) {
             log.warn("Ignored temperature reading for disabled sensor {}: {}",
