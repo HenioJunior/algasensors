@@ -1,8 +1,8 @@
 package com.algasensors.temperature.processing.infra.persistence.gateway;
 
 import com.algasensors.temperature.processing.domain.model.TemperatureReading;
+import com.algasensors.temperature.processing.domain.model.TemperatureTechnicalLog;
 import com.algasensors.temperature.processing.gateways.TemperatureTechnicalLogGateway;
-import com.algasensors.temperature.processing.infra.persistence.entity.TemperatureTechnicalLog;
 import com.algasensors.temperature.processing.infra.persistence.entity.TemperatureTechnicalLogEntity;
 import com.algasensors.temperature.processing.infra.persistence.repository.TemperatureTechnicalLogJpaRepository;
 import io.hypersistence.tsid.TSID;
@@ -35,24 +35,29 @@ public class TemperatureTechnicalLogGatewayJpaAdapter implements TemperatureTech
     @Override
     @Transactional
     public void markAsProcessed(String technicalLogId, String processedEventId, Instant processedAt) {
-        repository.findById(technicalLogId).ifPresent(entity -> {
-            TemperatureTechnicalLog domain = entity.toDomain();
-            domain.markAsProcessed(processedEventId, processedAt);
+        TemperatureTechnicalLogEntity entity = findById(technicalLogId);
 
-            TemperatureTechnicalLogEntity updatedEntity = TemperatureTechnicalLogEntity.fromDomain(domain);
-            repository.save(updatedEntity);
-        });
+        TemperatureTechnicalLog domain = entity.toDomain();
+        domain.markAsProcessed(processedEventId, processedAt);
+
+        repository.save(TemperatureTechnicalLogEntity.fromDomain(domain));
     }
 
     @Override
     @Transactional
     public void markAsFailed(String technicalLogId, String errorMessage) {
-        repository.findById(technicalLogId).ifPresent(entity -> {
-            TemperatureTechnicalLog domain = entity.toDomain();
-            domain.markAsFailed(errorMessage);
+        TemperatureTechnicalLogEntity entity = findById(technicalLogId);
 
-            TemperatureTechnicalLogEntity updatedEntity = TemperatureTechnicalLogEntity.fromDomain(domain);
-            repository.save(updatedEntity);
-        });
+        TemperatureTechnicalLog domain = entity.toDomain();
+        domain.markAsFailed(errorMessage);
+
+        repository.save(TemperatureTechnicalLogEntity.fromDomain(domain));
+    }
+
+    private TemperatureTechnicalLogEntity findById(String technicalLogId) {
+        return repository.findById(technicalLogId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Technical log not found: " + technicalLogId
+                ));
     }
 }

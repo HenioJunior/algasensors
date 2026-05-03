@@ -1,7 +1,7 @@
 package com.algasensors.temperature.processing.gateways;
 
 import com.algasensors.temperature.processing.domain.model.TemperatureReading;
-import com.algasensors.temperature.processing.infra.persistence.entity.TemperatureTechnicalLog;
+import com.algasensors.temperature.processing.domain.model.TemperatureTechnicalLog;
 
 import java.time.Instant;
 

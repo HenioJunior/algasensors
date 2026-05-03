@@ -1,5 +1,6 @@
 package com.algasensors.temperature.processing.infra.persistence.entity;
 
+import com.algasensors.temperature.processing.domain.model.TemperatureTechnicalLog;
 import com.algasensors.temperature.processing.domain.valueobject.SensorId;
 import com.algasensors.temperature.processing.infra.persistence.gateway.TemperatureTechnicalLogStatus;
 import jakarta.persistence.*;
@@ -151,18 +152,18 @@ public class TemperatureTechnicalLogEntity {
     }
 
     public TemperatureTechnicalLog toDomain() {
-        TemperatureTechnicalLog domain = new TemperatureTechnicalLog();
-        domain.setId(this.id);
-        domain.setRawMessageId(this.rawMessageId);
-        domain.setProcessedEventId(this.processedEventId);
-        domain.setSensorId(this.sensorId);
-        domain.setTemperature(this.temperature);
-        domain.setUnit(this.unit);
-        domain.setOccurredAt(this.occurredAt);
-        domain.setReceivedAt(this.receivedAt);
-        domain.setProcessedAt(this.processedAt);
-        domain.setStatus(this.status);
-        domain.setErrorMessage(this.errorMessage);
-        return domain;
+        return TemperatureTechnicalLog.withAll(
+                this.id,
+                this.rawMessageId,
+                this.processedEventId,
+                this.sensorId,
+                this.temperature,
+                this.unit,
+                this.occurredAt,
+                this.receivedAt,
+                this.processedAt,
+                this.status,
+                this.errorMessage
+        );
     }
 }

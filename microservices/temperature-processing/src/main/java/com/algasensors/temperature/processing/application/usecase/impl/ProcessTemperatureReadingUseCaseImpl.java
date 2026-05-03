@@ -2,12 +2,12 @@ package com.algasensors.temperature.processing.application.usecase.impl;
 
 import com.algasensors.temperature.processing.application.usecase.ProcessTemperatureReadingUseCase;
 import com.algasensors.temperature.processing.domain.model.TemperatureReading;
+import com.algasensors.temperature.processing.domain.model.TemperatureTechnicalLog;
 import com.algasensors.temperature.processing.domain.valueobject.SensorId;
 import com.algasensors.temperature.processing.gateways.TemperatureProcessedEventPublisher;
 import com.algasensors.temperature.processing.gateways.TemperatureTechnicalLogGateway;
 import com.algasensors.temperature.processing.infra.messaging.dto.TemperatureMessage;
 import com.algasensors.temperature.processing.infra.messaging.event.TemperatureProcessedEvent;
-import com.algasensors.temperature.processing.infra.persistence.entity.TemperatureTechnicalLog;
 import io.hypersistence.tsid.TSID;
 import org.springframework.stereotype.Service;
 
