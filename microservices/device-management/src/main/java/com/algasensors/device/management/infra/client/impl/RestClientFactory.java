@@ -17,11 +17,17 @@ public class RestClientFactory {
     private final RestClient.Builder builder;
 
     public RestClient temperatureMonitoringRestClient() {
-        return builder.baseUrl("http://localhost:8082")
+        return builder.baseUrl("http://localhost:8083")
                 .requestFactory(generateClientRequestFactory())
                 .defaultStatusHandler(HttpStatusCode::isError, ((request, response) -> {
                     throw new SensorMonitoringClientBadGatewayException();
                 }))
+                .build();
+    }
+
+    public RestClient sensorRestClient() {
+        return builder.baseUrl("http://localhost:8082")
+                .requestFactory(generateClientRequestFactory())
                 .build();
     }
 

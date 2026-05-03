@@ -6,6 +6,7 @@ import com.algasensors.device.management.application.support.SensorIdParser;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.valueobject.SensorId;
+import com.algasensors.device.management.infra.client.SensorClient;
 import com.algasensors.device.management.infra.client.impl.SensorMonitoringClientImpl;
 import io.hypersistence.tsid.TSID;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
 
     private final SensorGateway sensorGateway;
     private final SensorMonitoringClientImpl sensorMonitoringClient;
+    private final SensorClient sensorClient;
     private final SensorIdParser sensorIdParser;
 
     @Override
@@ -32,5 +34,6 @@ public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
         sensorGateway.save(sensor);
 
         sensorMonitoringClient.enableMonitoring(sensorId);
+        sensorClient.startTransmission(sensorId);
     }
 }

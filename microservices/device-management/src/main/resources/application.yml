@@ -4,3 +4,5 @@ server:
 spring:
   application:
     name: device-management
+  profiles:
+    active: dev
