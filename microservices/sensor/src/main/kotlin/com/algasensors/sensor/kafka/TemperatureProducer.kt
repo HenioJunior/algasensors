@@ -1,5 +1,6 @@
 package com.algasensors.sensor.kafka
 
+import io.hypersistence.tsid.TSID
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -15,16 +16,19 @@ class TemperatureProducer(
 
     fun sendTemperature(sensorId: String, temperature: Double) {
 
-        val timestamp =
+        val messageId = TSID.fast().toString()
+
+        val ocurredAt =
             OffsetDateTime.now()
                 .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
         val message =
             TemperatureMessage(
+                messageId,
                 sensorId,
                 temperature,
                 "Celsius",
-                timestamp
+                ocurredAt
             )
 
         kafkaTemplate.send(topicName, sensorId, message)

@@ -11,18 +11,18 @@ public class TemperatureReading {
     private final SensorId sensorId;
     private final BigDecimal temperature;
     private final String unit;
-    private final Instant timestamp;
+    private final Instant occurredAt;
 
     private TemperatureReading(
             SensorId sensorId,
             BigDecimal temperature,
             String unit,
-            Instant timestamp
+            Instant occurredAt
     ) {
         this.sensorId = Objects.requireNonNull(sensorId);
         this.temperature = Objects.requireNonNull(temperature);
         this.unit = Objects.requireNonNull(unit);
-        this.timestamp = Objects.requireNonNull(timestamp);
+        this.occurredAt = Objects.requireNonNull(occurredAt);
     }
 
     public static TemperatureReading of(
@@ -46,7 +46,7 @@ public class TemperatureReading {
         return unit;
     }
 
-    public Instant getTimestamp() {
-        return timestamp;
+    public Instant getOccurredAt() {
+        return occurredAt;
     }
 }

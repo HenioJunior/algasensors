@@ -12,6 +12,7 @@ public record TemperatureProcessedEvent(
         QualityPayload quality,
         SourcePayload source
 ) {
+
     public record QualityPayload(
             boolean valid,
             boolean normalized

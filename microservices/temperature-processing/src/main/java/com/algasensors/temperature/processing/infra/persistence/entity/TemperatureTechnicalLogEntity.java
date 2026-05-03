@@ -1,135 +1,168 @@
 package com.algasensors.temperature.processing.infra.persistence.entity;
 
 import com.algasensors.temperature.processing.domain.valueobject.SensorId;
+import com.algasensors.temperature.processing.infra.persistence.gateway.TemperatureTechnicalLogStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.UUID;
 
 @Table(name = "temperature_technical_log")
 @Entity
 public class TemperatureTechnicalLogEntity {
 
-    @EmbeddedId
+    @Id
+    private String id;
+
+    @Column(name = "raw_message_id")
+    private String rawMessageId;
+
+    @Column(name = "processed_event_id")
+    private String processedEventId;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "sensor_id", nullable = false))
     private SensorId sensorId;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "temperature", nullable = false, precision = 10, scale = 2)
     private BigDecimal temperature;
 
-    @Column(length = 10)
+    @Column(name = "unit", nullable = false)
     private String unit;
 
+    @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
 
-    @Column(nullable = false, updatable = false)
-    private Instant loggedAt;
+    @Column(name = "received_at", nullable = false)
+    private Instant receivedAt;
 
-    @Column(nullable = false, length = 30)
-    private String status;
+    @Column(name = "processed_at")
+    private Instant processedAt;
 
-    @Column(length = 255)
-    private String reason;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private TemperatureTechnicalLogStatus status;
 
-    public TemperatureTechnicalLogEntity() {
+    @Column(name = "error_message")
+    private String errorMessage;
+
+    public String getId() {
+        return id;
     }
 
-    private TemperatureTechnicalLogEntity(
-            SensorId sensorId,
-            BigDecimal temperature,
-            String unit,
-            Instant occurredAt,
-            String status,
-            String reason
-    ) {
-        this.sensorId = sensorId;
-        this.temperature = temperature;
-        this.unit = unit;
-        this.occurredAt = occurredAt;
-        this.status = status;
-        this.reason = reason;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public static TemperatureTechnicalLogEntity received(
-            SensorId sensorId,
-            BigDecimal temperature,
-            String unit,
-            Instant occurredAt
-    ) {
-        return new TemperatureTechnicalLogEntity(
-                sensorId,
-                temperature,
-                unit,
-                occurredAt,
-                "RECEIVED",
-                null
-        );
+    public String getRawMessageId() {
+        return rawMessageId;
     }
 
-    public static TemperatureTechnicalLogEntity processed(
-            SensorId sensorId,
-            BigDecimal temperature,
-            String unit,
-            Instant occurredAt
-    ) {
-        return new TemperatureTechnicalLogEntity(
-                sensorId,
-                temperature,
-                unit,
-                occurredAt,
-                "PROCESSED",
-                null
-        );
+    public void setRawMessageId(String rawMessageId) {
+        this.rawMessageId = rawMessageId;
     }
 
-    public static TemperatureTechnicalLogEntity discarded(
-            SensorId sensorId,
-            String reason
-    ) {
-        return new TemperatureTechnicalLogEntity(
-                sensorId,
-                null,
-                null,
-                Instant.now(),
-                "DISCARDED",
-                reason
-        );
+    public String getProcessedEventId() {
+        return processedEventId;
     }
 
-
-    @PrePersist
-    void prePersist() {
-        if (loggedAt == null) {
-            loggedAt = Instant.now();
-        }
+    public void setProcessedEventId(String processedEventId) {
+        this.processedEventId = processedEventId;
     }
 
     public SensorId getSensorId() {
         return sensorId;
     }
 
+    public void setSensorId(SensorId sensorId) {
+        this.sensorId = sensorId;
+    }
+
     public BigDecimal getTemperature() {
         return temperature;
+    }
+
+    public void setTemperature(BigDecimal temperature) {
+        this.temperature = temperature;
     }
 
     public String getUnit() {
         return unit;
     }
 
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public Instant getOccurredAt() {
         return occurredAt;
     }
 
-    public Instant getLoggedAt() {
-        return loggedAt;
+    public void setOccurredAt(Instant occurredAt) {
+        this.occurredAt = occurredAt;
     }
 
-    public String getStatus() {
+    public Instant getReceivedAt() {
+        return receivedAt;
+    }
+
+    public void setReceivedAt(Instant receivedAt) {
+        this.receivedAt = receivedAt;
+    }
+
+    public Instant getProcessedAt() {
+        return processedAt;
+    }
+
+    public void setProcessedAt(Instant processedAt) {
+        this.processedAt = processedAt;
+    }
+
+    public TemperatureTechnicalLogStatus getStatus() {
         return status;
     }
 
-    public String getReason() {
-        return reason;
+    public void setStatus(TemperatureTechnicalLogStatus status) {
+        this.status = status;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public static TemperatureTechnicalLogEntity fromDomain(TemperatureTechnicalLog domain) {
+        TemperatureTechnicalLogEntity entity = new TemperatureTechnicalLogEntity();
+        entity.id = domain.getId();
+        entity.rawMessageId = domain.getRawMessageId();
+        entity.processedEventId = domain.getProcessedEventId();
+        entity.sensorId = domain.getSensorId();
+        entity.temperature = domain.getTemperature();
+        entity.unit = domain.getUnit();
+        entity.occurredAt = domain.getOccurredAt();
+        entity.receivedAt = domain.getReceivedAt();
+        entity.processedAt = domain.getProcessedAt();
+        entity.status = domain.getStatus();
+        entity.errorMessage = domain.getErrorMessage();
+        return entity;
+    }
+
+    public TemperatureTechnicalLog toDomain() {
+        TemperatureTechnicalLog domain = new TemperatureTechnicalLog();
+        domain.setId(this.id);
+        domain.setRawMessageId(this.rawMessageId);
+        domain.setProcessedEventId(this.processedEventId);
+        domain.setSensorId(this.sensorId);
+        domain.setTemperature(this.temperature);
+        domain.setUnit(this.unit);
+        domain.setOccurredAt(this.occurredAt);
+        domain.setReceivedAt(this.receivedAt);
+        domain.setProcessedAt(this.processedAt);
+        domain.setStatus(this.status);
+        domain.setErrorMessage(this.errorMessage);
+        return domain;
+    }
 }
