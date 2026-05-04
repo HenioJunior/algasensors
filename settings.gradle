@@ -1,3 +1,4 @@
 include("microservices:device-management")
+include("microservices:sensor")
 include("microservices:temperature-monitoring")
 include("microservices:temperature-processing")
