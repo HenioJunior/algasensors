@@ -18,7 +18,8 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     @Override
     public void enableMonitoring(SensorId sensorId) {
         restClient.put()
-                .uri("/api/sensors/{sensorId}/monitoring/enable", sensorId)
+                .uri("/api/sensors/{sensorId}/monitoring/enable", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
                 .retrieve()
                 .toBodilessEntity();
     }
@@ -26,7 +27,8 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     @Override
     public void disableMonitoring(SensorId sensorId) {
         restClient.delete()
-                .uri("/api/sensors/{sensorId}/monitoring/enable", sensorId)
+                .uri("/api/sensors/{sensorId}/monitoring/enable", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
                 .retrieve()
                 .toBodilessEntity();
     }
@@ -34,7 +36,8 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     @Override
     public SensorMonitoringResponse getDetail(SensorId sensorId) {
         return restClient.get()
-                .uri("/api/sensors/{sensorId}/monitoring", sensorId)
+                .uri("/api/sensors/{sensorId}/monitoring", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
                 .retrieve()
                 .body(SensorMonitoringResponse.class);
     }
@@ -42,7 +45,8 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     @Override
     public SensorMonitoringResponse create(SensorId sensorId) {
         return restClient.post()
-                .uri("/api/sensors/{sensorId}/monitoring/create", sensorId)
+                .uri("/api/sensors/{sensorId}/monitoring/create", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
                 .retrieve()
                 .body(SensorMonitoringResponse.class);
     }
