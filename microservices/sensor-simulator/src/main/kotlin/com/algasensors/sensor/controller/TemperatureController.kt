@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/sensor")
+@RequestMapping("/api/sensors")
 class TemperatureController(
     private val temperatureService: TemperatureService
 ) {

@@ -13,3 +13,10 @@ app:
     topics:
       temperature-raw: temperature.raw.v1
       temperature-processed: temperature.processed.v1
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
