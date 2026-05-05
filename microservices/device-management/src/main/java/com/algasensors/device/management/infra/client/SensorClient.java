@@ -1,0 +1,1 @@
+package com.algasensors.device.management.infra.client;import com.algasensors.device.management.domain.valueobject.SensorId;public interface SensorClient {    void startTransmission(SensorId sensorId);    void stopTransmission(SensorId sensorId);}

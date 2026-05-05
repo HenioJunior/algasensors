@@ -4,3 +4,12 @@ server:
 spring:
   application:
     name: device-management
+  profiles:
+    active: dev
+
+app:
+  sensor:
+    url: http://localhost:8082
+  temperature:
+    monitoring:
+      url: http://localhost:8083

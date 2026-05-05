@@ -18,7 +18,7 @@ public class KafkaTemperatureProcessedEventPublisher implements TemperatureProce
 
     public KafkaTemperatureProcessedEventPublisher(
             KafkaTemplate<String, TemperatureProcessedEvent> kafkaTemplate,
-            @Value("${app.kafka.topics.temperature-processed}") String topic) {
+            @Value("${app.kafka.topics.processed-reading}") String topic) {
         this.kafkaTemplate = kafkaTemplate;
         this.topic = topic;
     }
@@ -27,9 +27,12 @@ public class KafkaTemperatureProcessedEventPublisher implements TemperatureProce
     public void publish(TemperatureProcessedEvent event) {
         String key = event.sensorId();
 
+        System.out.println("[DEBUG_LOG] Publishing processed event to topic: " + topic + " with key: " + key);
+
         kafkaTemplate.send(topic, key, event)
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
+                        System.err.println("[DEBUG_LOG] Failed to publish processed event: " + ex.getMessage());
                         log.error(
                                 "Failed to publish processed temperature event. topic={}, sensorId={}, eventId={}",
                                 topic,
@@ -41,6 +44,7 @@ public class KafkaTemperatureProcessedEventPublisher implements TemperatureProce
 
                     if (result != null && result.getRecordMetadata() != null) {
                         var metadata = result.getRecordMetadata();
+                        System.out.println("[DEBUG_LOG] Event published successfully to partition " + metadata.partition() + " at offset " + metadata.offset());
                         log.info(
                                 "Processed temperature event published. topic={}, partition={}, offset={}, sensorId={}, eventId={}",
                                 metadata.topic(),

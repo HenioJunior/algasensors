@@ -1,6 +1,6 @@
 package com.algasensors.temperature.monitoring.domain.service;
 
-import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
+import com.algasensors.temperature.monitoring.domain.model.TemperatureReading;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ public class ProcessTemperatureAlertUseCase {
     private final SensorAlertGateway sensorAlertGateway;
     private final TemperatureAlertEvaluator temperatureAlertEvaluator;
 
-    public AlertEvaluationResult execute(TemperatureLogResponse temperatureLogResponse) {
+    public AlertEvaluationResult execute(TemperatureReading temperatureReading) {
         Optional<SensorAlert> sensorAlert =
-                sensorAlertGateway.findById(temperatureLogResponse.getSensorId());
+                sensorAlertGateway.findById(temperatureReading.getSensorId());
 
-        return temperatureAlertEvaluator.evaluate(temperatureLogResponse, sensorAlert);
+        return temperatureAlertEvaluator.evaluate(temperatureReading, sensorAlert);
     }
 }

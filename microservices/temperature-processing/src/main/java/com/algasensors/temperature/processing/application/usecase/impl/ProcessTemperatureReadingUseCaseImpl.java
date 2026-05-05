@@ -2,61 +2,83 @@ package com.algasensors.temperature.processing.application.usecase.impl;
 
 import com.algasensors.temperature.processing.application.usecase.ProcessTemperatureReadingUseCase;
 import com.algasensors.temperature.processing.domain.model.TemperatureReading;
+import com.algasensors.temperature.processing.domain.model.TemperatureTechnicalLog;
 import com.algasensors.temperature.processing.domain.valueobject.SensorId;
 import com.algasensors.temperature.processing.gateways.TemperatureProcessedEventPublisher;
 import com.algasensors.temperature.processing.gateways.TemperatureTechnicalLogGateway;
 import com.algasensors.temperature.processing.infra.messaging.dto.TemperatureMessage;
 import com.algasensors.temperature.processing.infra.messaging.event.TemperatureProcessedEvent;
+import io.hypersistence.tsid.TSID;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
 @Service
 public class ProcessTemperatureReadingUseCaseImpl implements ProcessTemperatureReadingUseCase {
 
-    private final TemperatureProcessedEventPublisher publisher;
     private final TemperatureTechnicalLogGateway technicalLogGateway;
+    private final TemperatureProcessedEventPublisher processedEventPublisher;
 
-    public ProcessTemperatureReadingUseCaseImpl(
-            TemperatureProcessedEventPublisher publisher,
-            TemperatureTechnicalLogGateway technicalLogGateway
-    ) {
-        this.publisher = publisher;
+    public ProcessTemperatureReadingUseCaseImpl(TemperatureTechnicalLogGateway technicalLogGateway, TemperatureProcessedEventPublisher processedEventPublisher) {
         this.technicalLogGateway = technicalLogGateway;
+        this.processedEventPublisher = processedEventPublisher;
     }
 
     @Override
     public void execute(TemperatureMessage message) {
-        SensorId sensorId = SensorId.of(message.sensorId());
-        BigDecimal temperature = BigDecimal.valueOf(message.temperature());
+        TemperatureTechnicalLog technicalLog = null;
 
-        TemperatureReading reading = TemperatureReading.of(
-                sensorId,
-                temperature,
-                message.unit(),
-                Instant.parse(message.timestamp())
-        );
+        try {
+            TemperatureReading reading = TemperatureReading.of(
+                    SensorId.of(message.sensorId()),
+                    message.temperature(),
+                    message.unit(),
+                    message.occurredAt()
+            );
 
-        technicalLogGateway.saveReceived(reading);
+            System.out.println("[DEBUG_LOG] Saving technical log for sensor: " + message.sensorId());
+            technicalLog = technicalLogGateway.saveReceived(
+                    message.messageId(),
+                    reading
+            );
 
-        TemperatureProcessedEvent event = new TemperatureProcessedEvent(
-                UUID.randomUUID().toString(),
-                reading.getSensorId().getValue(),
-                reading.getTemperature().toPlainString(),
-                reading.getUnit(),
-                reading.getTimestamp(),
-                Instant.now(),
-                new TemperatureProcessedEvent.QualityPayload(true, true),
-                new TemperatureProcessedEvent.SourcePayload(
-                        "temperature-processing",
-                        "temperature.raw.v1"
-                )
-        );
+            Instant processedAt = Instant.now();
+            String eventId = TSID.fast().toString();
 
-        publisher.publish(event);
+            TemperatureProcessedEvent event = new TemperatureProcessedEvent(
+                    eventId,
+                    reading.getSensorId().getValue(),
+                    reading.getTemperature().toPlainString(),
+                    reading.getUnit(),
+                    reading.getOccurredAt(),
+                    processedAt,
+                    new TemperatureProcessedEvent.QualityPayload(true, false),
+                    new TemperatureProcessedEvent.SourcePayload(
+                            "temperature-processing",
+                            "temperature.raw.v1"
+                    )
+            );
 
-        technicalLogGateway.saveProcessed(reading);
+            processedEventPublisher.publish(event);
+
+            technicalLogGateway.markAsProcessed(
+                    technicalLog.getId(),
+                    eventId,
+                    processedAt
+            );
+
+        } catch (Exception ex) {
+            System.err.println("[DEBUG_LOG] Error processing reading: " + ex.getMessage());
+            ex.printStackTrace();
+            if (technicalLog != null) {
+                technicalLogGateway.markAsFailed(
+                        technicalLog.getId(),
+                        ex.getMessage()
+                );
+            }
+
+            throw ex;
+        }
     }
 }
