@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/sensors/{sensorId}/monitoring")
+@RequestMapping("/api/temperature-monitoring/sensors/{sensorId}/monitoring")
 @RequiredArgsConstructor
 public class SensorMonitoringController {
 
