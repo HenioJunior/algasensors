@@ -1,18 +1,20 @@
 package com.algasensors.device.management.application.usecase.impl;
 
 import com.algasensors.device.management.application.gateway.SensorGateway;
-import com.algasensors.device.management.application.usecase.EnableSensorUseCase;
 import com.algasensors.device.management.application.support.SensorIdParser;
+import com.algasensors.device.management.application.usecase.EnableSensorUseCase;
+import com.algasensors.device.management.domain.exception.SensorEnabledException;
 import com.algasensors.device.management.domain.exception.SensorNotFoundException;
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.valueobject.SensorId;
 import com.algasensors.device.management.infra.client.SensorClient;
 import com.algasensors.device.management.infra.client.impl.SensorMonitoringClientImpl;
-import io.hypersistence.tsid.TSID;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
@@ -29,6 +31,11 @@ public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
 
         Sensor sensor = sensorGateway.findById(sensorId)
                 .orElseThrow(() -> new SensorNotFoundException(command.sensorId()));
+
+        if (Boolean.TRUE.equals(sensor.getEnabled())) {
+            log.warn("Temperature is already enabled for sensor {}", sensor.getId());
+            throw new SensorEnabledException(sensor.getId());
+        }
 
         sensor.enable();
         sensorGateway.save(sensor);
