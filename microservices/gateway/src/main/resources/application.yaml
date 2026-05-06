@@ -1,0 +1,42 @@
+server:
+  port: 8100
+
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: device-management
+          uri: lb://DEVICE-MANAGEMENT
+          predicates:
+            - Path=/api/device-management/**,/api/devices/**,/api/sensors/**
+
+        - id: temperature-monitoring
+          uri: lb://TEMPERATURE-MONITORING
+          predicates:
+            - Path=/api/temperature-monitoring/**,/api/sensors/*/monitoring/**,/api/sensor-alerts/**
+
+        - id: temperature-processing
+          uri: lb://TEMPERATURE-PROCESSING
+          predicates:
+            - Path=/api/temperature-processing/**,/api/temperature-readings/**,/api/temperature-technical-logs/**
+
+        - id: sensor-simulator
+          uri: lb://SENSOR-SIMULATOR
+          predicates:
+            - Path=/api/sensor-simulator/**,/api/sensors/*/enable,/api/sensors/*/disable
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+  instance:
+    prefer-ip-address: true

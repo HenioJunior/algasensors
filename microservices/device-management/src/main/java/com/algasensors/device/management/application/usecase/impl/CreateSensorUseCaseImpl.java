@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class CreateSensorUseCaseImpl implements CreateSensorUseCase {
 
     private final SensorGateway sensorGateway;
-    private final SensorMonitoringClient sensorMonitoringClient;
 
     @Override
     @Transactional
@@ -29,7 +28,6 @@ public class CreateSensorUseCaseImpl implements CreateSensorUseCase {
                 command.model()
         );
         sensorGateway.save(sensor);
-        sensorMonitoringClient.create(sensor.getId());
 
         return sensor;
     }
