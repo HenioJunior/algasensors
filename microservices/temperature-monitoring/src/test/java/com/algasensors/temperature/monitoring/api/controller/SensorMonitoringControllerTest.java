@@ -5,7 +5,7 @@ import com.algasensors.temperature.monitoring.api.response.SensorMonitoringRespo
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.CreateMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.DisableSensorMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.EnableSensorMonitoringUseCase;
-import com.algasensors.temperature.monitoring.application.usecase.monitoring.ValidateSensorMonitoringExistsUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.FindSensorMonitoringByIdUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class SensorMonitoringControllerTest {
 
     @Mock
-    private ValidateSensorMonitoringExistsUseCase validateSensorMonitoringExistsUseCase;
+    private FindSensorMonitoringByIdUseCase findSensorMonitoringByIdUseCase;
 
     @Mock
     private CreateMonitoringUseCase createMonitoringUseCase;
@@ -52,16 +52,16 @@ class SensorMonitoringControllerTest {
 
     @Test
     void shouldGetDetailSuccessfully() {
-        when(validateSensorMonitoringExistsUseCase.execute(sensorId)).thenReturn(sensorMonitoring);
+        when(findSensorMonitoringByIdUseCase.execute(sensorId)).thenReturn(sensorMonitoring);
         when(sensorMonitoringResponseMapper.toResponse(sensorMonitoring)).thenReturn(response);
 
         SensorMonitoringResponse result = controller.getDetail(sensorId);
 
         assertSame(response, result);
-        verify(validateSensorMonitoringExistsUseCase).execute(sensorId);
+        verify(findSensorMonitoringByIdUseCase).execute(sensorId);
         verify(sensorMonitoringResponseMapper).toResponse(sensorMonitoring);
         verifyNoMoreInteractions(
-                validateSensorMonitoringExistsUseCase,
+                findSensorMonitoringByIdUseCase,
                 createMonitoringUseCase,
                 enableSensorMonitoringUseCase,
                 disableSensorMonitoringUseCase,
@@ -80,7 +80,7 @@ class SensorMonitoringControllerTest {
         verify(createMonitoringUseCase).execute(sensorId);
         verify(sensorMonitoringResponseMapper).toResponse(sensorMonitoring);
         verifyNoMoreInteractions(
-                validateSensorMonitoringExistsUseCase,
+                findSensorMonitoringByIdUseCase,
                 createMonitoringUseCase,
                 enableSensorMonitoringUseCase,
                 disableSensorMonitoringUseCase,
@@ -96,7 +96,7 @@ class SensorMonitoringControllerTest {
 
         verify(enableSensorMonitoringUseCase).execute(sensorId);
         verifyNoMoreInteractions(
-                validateSensorMonitoringExistsUseCase,
+                findSensorMonitoringByIdUseCase,
                 createMonitoringUseCase,
                 enableSensorMonitoringUseCase,
                 disableSensorMonitoringUseCase,
@@ -112,7 +112,7 @@ class SensorMonitoringControllerTest {
 
         verify(disableSensorMonitoringUseCase).execute(sensorId);
         verifyNoMoreInteractions(
-                validateSensorMonitoringExistsUseCase,
+                findSensorMonitoringByIdUseCase,
                 createMonitoringUseCase,
                 enableSensorMonitoringUseCase,
                 disableSensorMonitoringUseCase,

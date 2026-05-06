@@ -4,6 +4,6 @@ import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 
-public interface CreateSensorAlertUseCase {
+public interface CreateOrUpdateSensorAlertUseCase {
     SensorAlert execute(SensorId sensorId, SensorAlertRequest request);
 }

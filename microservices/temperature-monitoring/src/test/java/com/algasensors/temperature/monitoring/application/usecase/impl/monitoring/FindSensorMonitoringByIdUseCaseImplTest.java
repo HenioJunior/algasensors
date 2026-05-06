@@ -1,7 +1,7 @@
 package com.algasensors.temperature.monitoring.application.usecase.impl.monitoring;
 
 import com.algasensors.temperature.monitoring.application.gateway.SensorMonitoringGateway;
-import com.algasensors.temperature.monitoring.application.usecase.monitoring.impl.ValidateSensorMonitoringExistsUseCaseImpl;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.impl.FindSensorMonitoringByIdUseCaseImpl;
 import com.algasensors.temperature.monitoring.domain.exception.SensorMonitoringNotFoundException;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
@@ -19,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ValidateSensorMonitoringExistsUseCaseImplTest {
+class FindSensorMonitoringByIdUseCaseImplTest {
 
     @Mock
     private SensorMonitoringGateway sensorMonitoringGateway;
 
     @InjectMocks
-    private ValidateSensorMonitoringExistsUseCaseImpl useCase;
+    private FindSensorMonitoringByIdUseCaseImpl useCase;
 
     private SensorId sensorId;
 

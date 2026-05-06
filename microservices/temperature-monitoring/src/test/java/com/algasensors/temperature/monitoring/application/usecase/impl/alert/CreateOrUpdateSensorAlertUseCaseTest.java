@@ -2,8 +2,8 @@ package com.algasensors.temperature.monitoring.application.usecase.impl.alert;
 
 import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
 import com.algasensors.temperature.monitoring.application.gateway.SensorAlertGateway;
-import com.algasensors.temperature.monitoring.application.usecase.alert.impl.CreateSensorAlertUseCaseImpl;
-import com.algasensors.temperature.monitoring.application.usecase.monitoring.ValidateSensorMonitoringExistsUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.impl.CreateOrUpdateOrUpdateSensorAlertUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.FindSensorMonitoringByIdUseCase;
 import com.algasensors.temperature.monitoring.domain.exception.SensorMonitoringNotFoundException;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CreateSensorAlertUseCaseImplTest {
+class CreateOrUpdateSensorAlertUseCaseTest {
 
     @Mock
     private SensorAlertGateway sensorAlertGateway;
 
     @Mock
-    private ValidateSensorMonitoringExistsUseCase validateSensorMonitoringExistsUseCase;
+    private FindSensorMonitoringByIdUseCase findSensorMonitoringByIdUseCase;
 
     @InjectMocks
-    private CreateSensorAlertUseCaseImpl useCase;
+    private CreateOrUpdateOrUpdateSensorAlertUseCase useCase;
 
     private SensorId sensorId;
     private SensorAlertRequest request;
@@ -53,7 +53,7 @@ class CreateSensorAlertUseCaseImplTest {
 
         SensorAlert result = useCase.execute(sensorId, request);
 
-        verify(validateSensorMonitoringExistsUseCase).execute(sensorId);
+        verify(findSensorMonitoringByIdUseCase).execute(sensorId);
         verify(sensorAlertGateway).save(sensorAlertCaptor.getValue());
 
         SensorAlert savedAlert = sensorAlertCaptor.getValue();
@@ -66,14 +66,14 @@ class CreateSensorAlertUseCaseImplTest {
     @Test
     void shouldThrowExceptionWhenSensorMonitoringDoesNotExist() {
         doThrow(new SensorMonitoringNotFoundException(sensorId))
-                .when(validateSensorMonitoringExistsUseCase)
+                .when(findSensorMonitoringByIdUseCase)
                 .execute(sensorId);
 
         assertThrows(SensorMonitoringNotFoundException.class, () ->
                 useCase.execute(sensorId, request)
         );
 
-        verify(validateSensorMonitoringExistsUseCase).execute(sensorId);
+        verify(findSensorMonitoringByIdUseCase).execute(sensorId);
         verifyNoInteractions(sensorAlertGateway);
     }
 }
