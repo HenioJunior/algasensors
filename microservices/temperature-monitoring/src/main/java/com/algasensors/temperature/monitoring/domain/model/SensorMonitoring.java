@@ -32,7 +32,7 @@ public class SensorMonitoring {
                 .id(id)
                 .lastTemperature(BigDecimal.valueOf(0.0))
                 .updatedAt(OffsetDateTime.now())
-                .enabled(Boolean.TRUE).build();
+                .enabled(Boolean.FALSE).build();
     }
 
     public static void enable(SensorMonitoring sensorMonitoring) {
