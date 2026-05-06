@@ -6,7 +6,6 @@ import com.algasensors.device.management.application.usecase.CreateSensorUseCase
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.valueobject.SensorId;
 import com.algasensors.device.management.infra.client.SensorMonitoringClient;
-import com.algasensors.device.management.infra.client.impl.SensorMonitoringClientImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class CreateSensorUseCaseImpl implements CreateSensorUseCase {
 
     private final SensorGateway sensorGateway;
-    private final SensorMonitoringClientImpl sensorMonitoringClient;
+    private final SensorMonitoringClient sensorMonitoringClient;
 
     @Override
     @Transactional

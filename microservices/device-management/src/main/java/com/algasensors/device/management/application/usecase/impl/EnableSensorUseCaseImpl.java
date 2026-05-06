@@ -8,7 +8,7 @@ import com.algasensors.device.management.domain.exception.SensorNotFoundExceptio
 import com.algasensors.device.management.domain.model.Sensor;
 import com.algasensors.device.management.domain.valueobject.SensorId;
 import com.algasensors.device.management.infra.client.SensorClient;
-import com.algasensors.device.management.infra.client.impl.SensorMonitoringClientImpl;
+import com.algasensors.device.management.infra.client.SensorMonitoringClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class EnableSensorUseCaseImpl implements EnableSensorUseCase {
 
     private final SensorGateway sensorGateway;
-    private final SensorMonitoringClientImpl sensorMonitoringClient;
+    private final SensorMonitoringClient sensorMonitoringClient;
     private final SensorClient sensorClient;
     private final SensorIdParser sensorIdParser;
 
