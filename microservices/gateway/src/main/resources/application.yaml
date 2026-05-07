@@ -16,22 +16,17 @@ spring:
         - id: device-management
           uri: lb://DEVICE-MANAGEMENT
           predicates:
-            - Path=/api/device-management/**,/api/devices/**,/api/sensors/**
+            - Path=/api/device-management/**
 
         - id: temperature-monitoring
           uri: lb://TEMPERATURE-MONITORING
           predicates:
-            - Path=/api/temperature-monitoring/**,/api/sensors/*/monitoring/**,/api/sensor-alerts/**
-
-        - id: temperature-processing
-          uri: lb://TEMPERATURE-PROCESSING
-          predicates:
-            - Path=/api/temperature-processing/**,/api/temperature-readings/**,/api/temperature-technical-logs/**
+            - Path=/api/temperature-monitoring/**
 
         - id: sensor-simulator
           uri: lb://SENSOR-SIMULATOR
           predicates:
-            - Path=/api/sensor-simulator/**,/api/sensors/*/enable,/api/sensors/*/disable
+            - Path=/api/sensor-simulator/**
 
 eureka:
   client:
