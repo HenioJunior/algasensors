@@ -38,7 +38,7 @@ class TemperatureService(
 
     private fun generateTemperature(): Double {
         // Gerar temperatura aleatória entre 18 e 30 graus Celsius
-        return Random.nextDouble(18.0, 30.0)
+        return Random.nextDouble(0.0, 100.0)
     }
 
     fun stopTemperatureTransmission(sensorId: String? = null): String {

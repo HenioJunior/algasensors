@@ -23,11 +23,15 @@ public class CreateOrUpdateOrUpdateSensorAlertUseCase implements com.algasensors
         SensorAlert sensorAlert = sensorAlertGateway.findBySensorId(sensorId)
                 .map(existing -> existing.update(
                         request.getMinTemperature(),
+                        request.getWarningMinTemperature(),
+                        request.getWarningMaxTemperature(),
                         request.getMaxTemperature()
                 ))
                 .orElseGet(() -> SensorAlert.create(
                         sensorId,
                         request.getMinTemperature(),
+                        request.getWarningMinTemperature(),
+                        request.getWarningMaxTemperature(),
                         request.getMaxTemperature()
                 ));
 
