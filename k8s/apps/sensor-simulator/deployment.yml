@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensor-simulator
+  namespace: algasensors
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: sensor-simulator
+
+  template:
+    metadata:
+      labels:
+        app: sensor-simulator
+
+    spec:
+      containers:
+        - name: sensor-simulator
+
+          image: algasensors/sensor-simulator:dev
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8082
+
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sensor-simulator
+  namespace: algasensors
+
+spec:
+  selector:
+    app: sensor-simulator
+
+  ports:
+    - port: 8082
+      targetPort: 8082
