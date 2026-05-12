@@ -27,11 +27,6 @@ kind load docker-image \
   algasensors/temperature-processing:dev \
   --name algasensors
 
-echo "Restarting deployment..."
-
-kubectl rollout restart deployment/temperature-processing \
-  -n algasensors
-
 echo "Applying Kubernetes manifests..."
 
 kubectl apply -f "$K8S_DIR/apps/temperature-processing/"
@@ -42,5 +37,8 @@ kubectl rollout restart deployment/temperature-processing \
   -n algasensors
 
 echo "Waiting rollout..."
+
+kubectl rollout status deployment/temperature-processing \
+  -n algasensors
 
 echo "Done!"

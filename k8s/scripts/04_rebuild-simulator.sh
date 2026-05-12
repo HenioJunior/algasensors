@@ -24,11 +24,6 @@ kind load docker-image \
   algasensors/sensor-simulator:dev \
   --name algasensors
 
-echo "Restarting deployment..."
-
-kubectl rollout restart deployment/sensor-simulator \
-  -n algasensors
-
 echo "Applying Kubernetes manifests..."
 
 kubectl apply -f "$K8S_DIR/apps/sensor-simulator/"
@@ -39,5 +34,8 @@ kubectl rollout restart deployment/sensor-simulator \
   -n algasensors
 
 echo "Waiting rollout..."
+
+kubectl rollout status deployment/sensor-simulator \
+  -n algasensors
 
 echo "Done!"
