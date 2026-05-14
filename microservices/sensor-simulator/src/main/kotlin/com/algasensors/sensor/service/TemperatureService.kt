@@ -1,11 +1,16 @@
 package com.algasensors.sensor.service
 
+import com.algasensors.sensor.dto.TemperatureMessage
 import com.algasensors.sensor.kafka.TemperatureProducer
+import io.hypersistence.tsid.TSID
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -25,7 +30,16 @@ class TemperatureService(
         val task = scheduler.scheduleAtFixedRate({
             try {
                 val temperature = generateTemperature()
-                temperatureProducer.sendTemperature(sensorId, temperature)
+                val messageId = TSID.fast().toString()
+                val message = TemperatureMessage(
+                    messageId,
+                    sensorId,
+                    temperature,
+                    "C",
+                    occurredAt = java.time.Instant.now())
+                logger.info(
+                    "Sending temperature reading: message={}", message)
+                temperatureProducer.sendTemperature(message)
             } catch (e: Exception) {
                 logger.error("Error sending temperature for sensor: {}", sensorId, e)
             }
@@ -36,9 +50,19 @@ class TemperatureService(
         return "Temperature sending started for sensor $sensorId"
     }
 
-    private fun generateTemperature(): Double {
-        // Gerar temperatura aleatória entre 18 e 30 graus Celsius
-        return Random.nextDouble(0.0, 100.0)
+    private fun generateTemperature(): BigDecimal {
+        val random = ThreadLocalRandom.current()
+
+        val temperature = when (random.nextInt(100)) {
+            in 0..74 -> random.nextDouble(20.0, 30.0)   // NORMAL
+            in 75..84 -> random.nextDouble(10.0, 19.9)  // WARNING_LOW
+            in 85..94 -> random.nextDouble(30.1, 39.9)  // WARNING_HIGH
+            in 95..97 -> random.nextDouble(-5.0, 9.9)   // CRITICAL_LOW
+            else -> random.nextDouble(40.1, 55.0)       // CRITICAL_HIGH
+        }
+        logger.info("Generated temperature: {}", temperature)
+
+        return BigDecimal.valueOf(temperature).setScale(2, RoundingMode.HALF_UP)
     }
 
     fun stopTemperatureTransmission(sensorId: String? = null): String {
