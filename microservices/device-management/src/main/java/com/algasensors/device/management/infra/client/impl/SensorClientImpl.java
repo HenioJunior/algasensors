@@ -18,7 +18,7 @@ public class SensorClientImpl implements SensorClient {
     @Override
     public void startTransmission(SensorId sensorId) {
         restClient.post()
-                .uri("/api/sensor/sendTemperature/{sensorId}", sensorId.getValue())
+                .uri("/api/sensor-simulator/sensors/sendTemperature/{sensorId}", sensorId.getValue())
                 .retrieve()
                 .toBodilessEntity();
     }
@@ -26,7 +26,7 @@ public class SensorClientImpl implements SensorClient {
     @Override
     public void stopTransmission(SensorId sensorId) {
         restClient.post()
-                .uri("/api/sensor/stopSending/{sensorId}", sensorId.getValue())
+                .uri("/api/sensor-simulator/sensors/stopSending/{sensorId}", sensorId.getValue())
                 .retrieve()
                 .toBodilessEntity();
     }

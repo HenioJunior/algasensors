@@ -1,9 +1,6 @@
 package com.algasensors.device.management.api.exception;
 
-import com.algasensors.device.management.domain.exception.SensorMonitoringNotFoundException;
-import com.algasensors.device.management.domain.exception.SensorMonitoringClientBadGatewayException;
-import com.algasensors.device.management.domain.exception.InvalidSensorIdException;
-import com.algasensors.device.management.domain.exception.SensorNotFoundException;
+import com.algasensors.device.management.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -68,6 +65,22 @@ public class ApiExceptionHandler {
 
         return problemDetail;
 
+    }
+
+    @ExceptionHandler(SensorEnabledException.class)
+    public ProblemDetail isSensorEnabled(SensorEnabledException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+        problemDetail.setTitle("Sensor is enabled");
+        problemDetail.setDetail(ex.getMessage());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(SensorDisabledException.class)
+    public ProblemDetail isSensorEnabled(SensorDisabledException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+        problemDetail.setTitle("Sensor is disabled");
+        problemDetail.setDetail(ex.getMessage());
+        return problemDetail;
     }
 
 }

@@ -19,7 +19,7 @@ public class ProcessTemperatureAlertUseCase {
 
     public AlertEvaluationResult execute(TemperatureReading temperatureReading) {
         Optional<SensorAlert> sensorAlert =
-                sensorAlertGateway.findById(temperatureReading.getSensorId());
+                sensorAlertGateway.findBySensorId(temperatureReading.getSensorId());
 
         return temperatureAlertEvaluator.evaluate(temperatureReading, sensorAlert);
     }

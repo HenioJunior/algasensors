@@ -33,7 +33,7 @@ public class SensorAlertGatewayImpl implements SensorAlertGateway {
     }
 
     @Override
-    public Optional<SensorAlert> findById(SensorId sensorId) {
-        return sensorAlertRepository.findById(new SensorId(sensorId.getValue()));
+    public Optional<SensorAlert> findBySensorId(SensorId sensorId) {
+        return sensorAlertRepository.findBySensorId(new SensorId(sensorId.getValue()));
     }
 }

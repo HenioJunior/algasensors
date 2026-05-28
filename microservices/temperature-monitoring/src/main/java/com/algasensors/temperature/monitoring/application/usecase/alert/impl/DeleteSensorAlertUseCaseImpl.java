@@ -19,7 +19,7 @@ public class DeleteSensorAlertUseCaseImpl implements DeleteSensorAlertUseCase {
     @Override
     @Transactional
     public void execute(SensorId sensorId) {
-        SensorAlert sensorAlert = sensorAlertGateway.findById(sensorId)
+        SensorAlert sensorAlert = sensorAlertGateway.findBySensorId(sensorId)
                 .orElseThrow(() -> new SensorAlertNotFoundException(sensorId));
         sensorAlertGateway.delete(sensorAlert);
     }

@@ -27,6 +27,18 @@ public class RestClientConfig {
                 .build();
     }
 
+    @Bean
+    @Qualifier("sensorRestClient")
+    public RestClient sensorRestClient(
+            RestClient.Builder builder,
+            @Value("${app.sensor.url}") String baseUrl
+    ) {
+        return builder
+                .baseUrl(baseUrl)
+                .requestFactory(generateClientRequestFactory())
+                .build();
+    }
+
     private ClientHttpRequestFactory generateClientRequestFactory() {
 
         RequestConfig config = RequestConfig.custom()
@@ -39,17 +51,5 @@ public class RestClientConfig {
                 .build();
 
         return new HttpComponentsClientHttpRequestFactory(httpClient);
-    }
-
-    @Bean
-    @Qualifier("sensorRestClient")
-    public RestClient sensorRestClient(
-            RestClient.Builder builder,
-            @Value("${app.sensor.url}") String baseUrl
-    ) {
-        return builder
-                .baseUrl(baseUrl)
-                .requestFactory(generateClientRequestFactory())
-                .build();
     }
 }

@@ -16,7 +16,7 @@ public class FindSensorAlertByIdUseCaseImpl implements FindSensorAlertByIdUseCas
 
     @Override
     public SensorAlert execute(SensorId sensorId) {
-        return sensorAlertGateway.findById(sensorId)
+        return sensorAlertGateway.findBySensorId(sensorId)
                 .orElseThrow(() -> new SensorAlertNotFoundException(sensorId));
     }
 }

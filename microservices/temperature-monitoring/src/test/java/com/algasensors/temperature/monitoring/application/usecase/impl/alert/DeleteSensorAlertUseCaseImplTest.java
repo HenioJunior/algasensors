@@ -37,22 +37,22 @@ class DeleteSensorAlertUseCaseImplTest {
 
     @Test
     void shouldDeleteSensorAlertSuccessfully() {
-        when(sensorAlertGateway.findById(sensorId)).thenReturn(Optional.of(sensorAlert));
+        when(sensorAlertGateway.findBySensorId(sensorId)).thenReturn(Optional.of(sensorAlert));
 
         useCase.execute(sensorId);
 
-        verify(sensorAlertGateway).findById(sensorId);
+        verify(sensorAlertGateway).findBySensorId(sensorId);
         verify(sensorAlertGateway).delete(sensorAlert);
         verifyNoMoreInteractions(sensorAlertGateway);
     }
 
     @Test
     void shouldThrowExceptionWhenSensorAlertDoesNotExist() {
-        when(sensorAlertGateway.findById(sensorId)).thenReturn(Optional.empty());
+        when(sensorAlertGateway.findBySensorId(sensorId)).thenReturn(Optional.empty());
 
         assertThrows(SensorAlertNotFoundException.class, () -> useCase.execute(sensorId));
 
-        verify(sensorAlertGateway).findById(sensorId);
+        verify(sensorAlertGateway).findBySensorId(sensorId);
         verify(sensorAlertGateway, never()).delete(any());
         verifyNoMoreInteractions(sensorAlertGateway);
     }

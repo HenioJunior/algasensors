@@ -5,7 +5,7 @@ import com.algasensors.temperature.monitoring.api.response.SensorMonitoringRespo
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.CreateMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.DisableSensorMonitoringUseCase;
 import com.algasensors.temperature.monitoring.application.usecase.monitoring.EnableSensorMonitoringUseCase;
-import com.algasensors.temperature.monitoring.application.usecase.monitoring.ValidateSensorMonitoringExistsUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.monitoring.FindSensorMonitoringByIdUseCase;
 import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/sensors/{sensorId}/monitoring")
+@RequestMapping("/api/temperature-monitoring/sensors/{sensorId}/monitoring")
 @RequiredArgsConstructor
 public class SensorMonitoringController {
 
-    private final ValidateSensorMonitoringExistsUseCase validateSensorMonitoringExistsUseCase;
+    private final FindSensorMonitoringByIdUseCase findSensorMonitoringByIdUseCase;
     private final CreateMonitoringUseCase createMonitoringUseCase;
     private final EnableSensorMonitoringUseCase enableSensorMonitoringUseCase;
     private final DisableSensorMonitoringUseCase disableSensorMonitoringUseCase;
@@ -26,7 +26,7 @@ public class SensorMonitoringController {
 
     @GetMapping
     public SensorMonitoringResponse getDetail(@PathVariable("sensorId") SensorId sensorId){
-        SensorMonitoring sensorMonitoring = validateSensorMonitoringExistsUseCase.execute(sensorId);
+        SensorMonitoring sensorMonitoring = findSensorMonitoringByIdUseCase.execute(sensorId);
         return sensorMonitoringResponseMapper.toResponse(sensorMonitoring);
     }
 

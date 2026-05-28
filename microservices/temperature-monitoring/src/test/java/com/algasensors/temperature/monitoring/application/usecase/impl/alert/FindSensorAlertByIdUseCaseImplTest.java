@@ -38,22 +38,22 @@ class FindSensorAlertByIdUseCaseImplTest {
 
     @Test
     void shouldReturnSensorAlertWhenItExists() {
-        when(sensorAlertGateway.findById(sensorId)).thenReturn(Optional.of(sensorAlert));
+        when(sensorAlertGateway.findBySensorId(sensorId)).thenReturn(Optional.of(sensorAlert));
 
         SensorAlert result = useCase.execute(sensorId);
 
         assertSame(sensorAlert, result);
-        verify(sensorAlertGateway).findById(sensorId);
+        verify(sensorAlertGateway).findBySensorId(sensorId);
         verifyNoMoreInteractions(sensorAlertGateway);
     }
 
     @Test
     void shouldThrowExceptionWhenSensorAlertDoesNotExist() {
-        when(sensorAlertGateway.findById(sensorId)).thenReturn(Optional.empty());
+        when(sensorAlertGateway.findBySensorId(sensorId)).thenReturn(Optional.empty());
 
         assertThrows(SensorAlertNotFoundException.class, () -> useCase.execute(sensorId));
 
-        verify(sensorAlertGateway).findById(sensorId);
+        verify(sensorAlertGateway).findBySensorId(sensorId);
         verifyNoMoreInteractions(sensorAlertGateway);
     }
 }
