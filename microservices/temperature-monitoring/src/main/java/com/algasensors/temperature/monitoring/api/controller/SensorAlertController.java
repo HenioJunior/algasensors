@@ -1,73 +1,50 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
-import com.algasensors.temperature.monitoring.api.model.SensorAlertInput;
-import com.algasensors.temperature.monitoring.api.model.SensorAlertOutput;
-import com.algasensors.temperature.monitoring.common.IdGenerator;
+import com.algasensors.temperature.monitoring.api.mapper.SensorAlertResponseMapper;
+import com.algasensors.temperature.monitoring.api.request.SensorAlertRequest;
+import com.algasensors.temperature.monitoring.api.response.SensorAlertResponse;
+import com.algasensors.temperature.monitoring.application.usecase.alert.DeleteSensorAlertUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.FindSensorAlertByIdUseCase;
+import com.algasensors.temperature.monitoring.application.usecase.alert.impl.CreateOrUpdateOrUpdateSensorAlertUseCase;
 import com.algasensors.temperature.monitoring.domain.model.SensorAlert;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
-import com.algasensors.temperature.monitoring.domain.repository.SensorAlertRepository;
-import io.hypersistence.tsid.TSID;
-import lombok.NonNull;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/sensors/")
+@RequestMapping("/api/temperature-monitoring/sensors/{sensorId}/alert")
 public class SensorAlertController {
 
-    private final SensorAlertRepository sensorAlertRepository;
+    private final FindSensorAlertByIdUseCase findSensorAlertByIdUseCase;
+    private final SensorAlertResponseMapper sensorAlertResponseMapper;
+    private final CreateOrUpdateOrUpdateSensorAlertUseCase createOrUpdateSensorAlertUseCase;
+    private final DeleteSensorAlertUseCase deleteSensorAlertUseCase;
 
-    @GetMapping("{sensorId}/alert")
-    ResponseEntity<SensorAlertOutput> getAlert(@PathVariable("sensorId") TSID sensorId) {
 
-        SensorAlert sensorAlert = getSensorAlert(sensorId);
-
-        return ResponseEntity.ok(convertToSensorAlertOutput(sensorAlert));
+    @GetMapping
+    public ResponseEntity<SensorAlertResponse> getAlertById(@PathVariable("sensorId") SensorId sensorId) {
+        SensorAlert sensorAlert = findSensorAlertByIdUseCase.execute(sensorId);
+        return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(sensorAlert));
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public SensorAlertOutput createAlert(@RequestBody SensorAlertInput input) {
-        SensorAlert sensorAlert = SensorAlert
-                .builder()
-                .id(new SensorId(IdGenerator.generateTSID()))
-                .minTemperature(input.getMinTemperature())
-                .maxTemperature(input.getMaxTemperature())
-                .build();
-        sensorAlertRepository.save(sensorAlert);
-        return convertToSensorAlertOutput(sensorAlert);
+    @PutMapping
+    public ResponseEntity<SensorAlertResponse> createOrUpdate(
+            @PathVariable String sensorId,
+            @RequestBody SensorAlertRequest request
+    ) {
+        SensorId id = SensorId.of(sensorId);
+
+        SensorAlert alert = createOrUpdateSensorAlertUseCase.execute(id, request);
+
+        return ResponseEntity.ok(sensorAlertResponseMapper.toResponse(alert));
     }
 
-    @PutMapping("{sensorId}/alert")
-    public void updateAlert(@PathVariable("sensorId") TSID sensorId,
-                            @RequestBody SensorAlertInput input) {
-        SensorAlert sensorAlert = getSensorAlert(sensorId);
-        sensorAlert.setMaxTemperature(input.getMaxTemperature());
-        sensorAlert.setMinTemperature(input.getMinTemperature());
-        sensorAlertRepository.save(sensorAlert);
-    }
-
-    @DeleteMapping("{sensorId}/alert")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAlert(@PathVariable("sensorId") TSID sensorId) {
-        SensorAlert sensorAlert = getSensorAlert(sensorId);
-        sensorAlertRepository.delete(sensorAlert);
-    }
-
-    private static SensorAlertOutput convertToSensorAlertOutput(SensorAlert sensorAlert) {
-        return SensorAlertOutput.builder()
-                .id(sensorAlert.getId().getValue())
-                .maxTemperature(sensorAlert.getMaxTemperature())
-                .minTemperature(sensorAlert.getMinTemperature())
-                .build();
-    }
-
-    private @NonNull SensorAlert getSensorAlert(TSID sensorId) {
-        return sensorAlertRepository.findById(new SensorId(sensorId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public void deleteAlert(@PathVariable("sensorId") SensorId sensorId) {
+        deleteSensorAlertUseCase.execute(sensorId);
     }
 }

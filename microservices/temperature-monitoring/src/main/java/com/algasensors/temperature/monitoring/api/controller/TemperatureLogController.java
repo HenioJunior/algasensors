@@ -1,9 +1,9 @@
 package com.algasensors.temperature.monitoring.api.controller;
 
-import com.algasensors.temperature.monitoring.api.model.TemperatureLogData;
-import com.algasensors.temperature.monitoring.domain.model.SensorId;
+import com.algasensors.temperature.monitoring.api.response.TemperatureLogResponse;
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
 import com.algasensors.temperature.monitoring.domain.model.TemperatureLog;
-import com.algasensors.temperature.monitoring.domain.repository.TemperatureLogRepository;
+import com.algasensors.temperature.monitoring.persistence.repository.TemperatureLogRepository;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,27 +14,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
-@RequestMapping("/api/sensors/{sensorId}/temperatures")
+@RequestMapping("/api/temperature-monitoring/sensors/{sensorId}/temperatures")
 @RequiredArgsConstructor
 public class TemperatureLogController {
 
     private final TemperatureLogRepository temperatureLogRepository;
 
     @GetMapping
-    public Page<TemperatureLogData> search(@PathVariable("sensorId") TSID sensorId,
-                                           @PageableDefault Pageable pageable) {
+    public Page<TemperatureLogResponse> search(@PathVariable("sensorId") TSID sensorId,
+                                               @PageableDefault Pageable pageable) {
         Page<TemperatureLog> temperatureLogs = temperatureLogRepository.findAllBySensorId(
                 new SensorId(sensorId), pageable);
 
         return temperatureLogs.map(temperatureLog ->
-                TemperatureLogData.builder()
-                        .id(temperatureLog.getId().getValue().toString())
+                TemperatureLogResponse.builder()
+                        .id(temperatureLog.getId().getValue())
                         .value(temperatureLog.getTemperatureValue())
                         .registeredAt(temperatureLog.getRegisteredAt())
-                        .sensorId(temperatureLog.getSensorId().getValue())
+                        .sensorId(temperatureLog.getSensorId())
                         .build());
     }
 }

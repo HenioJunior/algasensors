@@ -1,12 +1,15 @@
 server:
-  port: 8081
+  port: 8084
 
 spring:
-  application.name: temperature-processing
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: rabbitmq
-    password: rabbitmq
+  application:
+    name: temperature-processing
 
+  profiles:
+    active: dev
 
+app:
+  kafka:
+    topics:
+      temperature-raw: temperature.raw.v1
+      temperature-processed: temperature.processed.v1

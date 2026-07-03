@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temperature-processing
+  namespace: algasensors
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: temperature-processing
+
+  template:
+    metadata:
+      labels:
+        app: temperature-processing
+
+    spec:
+      containers:
+        - name: temperature-processing
+
+          image: algasensors/temperature-processing:dev
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8084
+
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: temperature-processing
+  namespace: algasensors
+
+spec:
+  selector:
+    app: temperature-processing
+
+  ports:
+    - port: 8084
+      targetPort: 8084

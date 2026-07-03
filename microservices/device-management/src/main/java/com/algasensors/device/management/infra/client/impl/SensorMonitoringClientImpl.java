@@ -1,0 +1,57 @@
+package com.algasensors.device.management.infra.client.impl;
+
+import com.algasensors.device.management.api.response.SensorMonitoringResponse;
+import com.algasensors.device.management.domain.valueobject.SensorId;
+import com.algasensors.device.management.infra.client.SensorMonitoringClient;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+
+@Component
+public class SensorMonitoringClientImpl implements SensorMonitoringClient {
+
+    private final RestClient restClient;
+
+    public SensorMonitoringClientImpl(
+            @Qualifier("temperatureMonitoringRestClient") RestClient restClient
+    ) {
+        this.restClient = restClient;
+    }
+
+
+    @Override
+    public void enableMonitoring(SensorId sensorId) {
+        restClient.put()
+                .uri("/api/temperature-monitoring/sensors/{sensorId}/monitoring/enable", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    @Override
+    public void disableMonitoring(SensorId sensorId) {
+        restClient.delete()
+                .uri("/api/temperature-monitoring/sensors/{sensorId}/monitoring/enable", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    @Override
+    public SensorMonitoringResponse getDetail(SensorId sensorId) {
+        return restClient.get()
+                .uri("/api/temperature-monitoring/sensors/{sensorId}/monitoring", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
+                .retrieve()
+                .body(SensorMonitoringResponse.class);
+    }
+
+    @Override
+    public SensorMonitoringResponse create(SensorId sensorId) {
+        return restClient.post()
+                .uri("/api/temperature-monitoring/sensors/{sensorId}/monitoring/create", sensorId.getValue())
+                .attribute("sensorId", sensorId.getValue())
+                .retrieve()
+                .body(SensorMonitoringResponse.class);
+    }
+}

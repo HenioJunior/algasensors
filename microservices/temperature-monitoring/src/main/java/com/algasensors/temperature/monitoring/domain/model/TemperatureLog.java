@@ -1,12 +1,15 @@
 package com.algasensors.temperature.monitoring.domain.model;
 
 
+import com.algasensors.temperature.monitoring.domain.valueobject.SensorId;
+import com.algasensors.temperature.monitoring.domain.valueobject.TemperatureLogId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Data
@@ -21,7 +24,7 @@ public class TemperatureLog {
     private TemperatureLogId id;
 
     @Column(name = "temperature_value")
-    private Double temperatureValue;
+    private BigDecimal temperatureValue;
 
     private OffsetDateTime registeredAt;
 

@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/temperature_monitoring
+    username: postgres
+    password: postgres
+
+  kafka:
+    bootstrap-servers: broker:29092
