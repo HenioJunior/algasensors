@@ -53,6 +53,7 @@ class ProcessTemperatureReadingUseCaseImplTest {
     void shouldCreateNewMonitoringWhenSensorNotFound() {
         when(sensorMonitoringGateway.findById(sensorId)).thenReturn(Optional.empty());
         SensorMonitoring newMonitoring = SensorMonitoring.create(sensorId);
+        newMonitoring.setEnabled(true);
         when(createMonitoringUseCase.execute(sensorId)).thenReturn(newMonitoring);
 
         useCase.execute(reading);
@@ -67,6 +68,7 @@ class ProcessTemperatureReadingUseCaseImplTest {
     @Test
     void shouldUpdateExistingMonitoringWhenSensorFound() {
         SensorMonitoring existingMonitoring = SensorMonitoring.create(sensorId);
+        existingMonitoring.setEnabled(true);
         when(sensorMonitoringGateway.findById(sensorId)).thenReturn(Optional.of(existingMonitoring));
 
         useCase.execute(reading);

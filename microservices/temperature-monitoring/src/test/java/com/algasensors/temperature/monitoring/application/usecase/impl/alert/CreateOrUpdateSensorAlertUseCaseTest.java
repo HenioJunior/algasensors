@@ -41,6 +41,8 @@ class CreateOrUpdateSensorAlertUseCaseTest {
 
         request = new SensorAlertRequest();
         request.setMinTemperature(BigDecimal.valueOf(10));
+        request.setWarningMinTemperature(BigDecimal.valueOf(20));
+        request.setWarningMaxTemperature(BigDecimal.valueOf(40));
         request.setMaxTemperature(BigDecimal.valueOf(50));
     }
 

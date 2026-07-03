@@ -21,54 +21,55 @@ public class SensorAlert {
     @EmbeddedId
     @AttributeOverride(name = "value", column = @Column(name = "id", nullable = false, updatable = false))
     private SensorId sensorId;
-    private BigDecimal maxTemperature;
     private BigDecimal minTemperature;
     private BigDecimal warningMinTemperature;
     private BigDecimal warningMaxTemperature;
+    private BigDecimal maxTemperature;
 
-    public static SensorAlert create(SensorId sensorId, BigDecimal minTemperature, BigDecimal maxTemperature, BigDecimal warningMinTemperature, BigDecimal warningMaxTemperature) {
+    public static SensorAlert create(SensorId sensorId, BigDecimal minTemperature, BigDecimal warningMinTemperature, BigDecimal warningMaxTemperature, BigDecimal maxTemperature) {
         validateRange(
                 minTemperature,
-                maxTemperature,
                 warningMinTemperature,
-                warningMaxTemperature
+                warningMaxTemperature,
+                maxTemperature
+
         );
         return SensorAlert
                 .builder()
                 .sensorId(Objects.requireNonNull(sensorId))
                 .minTemperature(minTemperature)
-                .maxTemperature(maxTemperature)
                 .warningMinTemperature(warningMinTemperature)
                 .warningMaxTemperature(warningMaxTemperature)
+                .maxTemperature(maxTemperature)
                 .build();
     }
 
-    public SensorAlert update(BigDecimal minTemperature, BigDecimal maxTemperature, BigDecimal warningMinTemperature, BigDecimal warningMaxTemperature) {
+    public SensorAlert update(BigDecimal minTemperature, BigDecimal warningMinTemperature, BigDecimal warningMaxTemperature, BigDecimal maxTemperature) {
         validateRange(
                 minTemperature,
-                maxTemperature,
                 warningMinTemperature,
-                warningMaxTemperature
+                warningMaxTemperature,
+                maxTemperature
         );
 
         this.minTemperature = minTemperature;
-        this.maxTemperature = maxTemperature;
         this.warningMinTemperature = warningMinTemperature;
         this.warningMaxTemperature = warningMaxTemperature;
+        this.maxTemperature = maxTemperature;
         return this;
     }
 
     private static void validateRange(
             BigDecimal minTemperature,
-            BigDecimal maxTemperature,
             BigDecimal warningMinTemperature,
-            BigDecimal warningMaxTemperature
+            BigDecimal warningMaxTemperature,
+            BigDecimal maxTemperature
     ) {
 
         Objects.requireNonNull(minTemperature);
-        Objects.requireNonNull(maxTemperature);
         Objects.requireNonNull(warningMinTemperature);
         Objects.requireNonNull(warningMaxTemperature);
+        Objects.requireNonNull(maxTemperature);
 
         boolean invalid =
                 minTemperature.compareTo(warningMinTemperature) >= 0 ||
